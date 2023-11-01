@@ -43,7 +43,7 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
             )
         # print("Temp: ", temp)
         position.append(temp)
-    print("Position: ", position)
+    # print("Position: ", position)
     for i in range(0, N):
         val = position[i][0: len(position[i])]
         # print("val: ",val)
@@ -168,7 +168,7 @@ print("Pollination locally:", pl)
 
 
 # Flower Pollination Algorithms
-def flower_pollination_algorithms(flowers=3, min_values=[-5, -5], max_values=[5, 5], iteration=50, gamma=0.5, lamb=1.4,
+def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, iteration=50, gamma=0.5, lamb=1.4,
                                   p=0.8, function=six_hump_camel_back):
     """
 
@@ -183,32 +183,36 @@ def flower_pollination_algorithms(flowers=3, min_values=[-5, -5], max_values=[5,
     :return:
     """
 
+    if max_values is None:
+        max_values = [5, 5]
+    if min_values is None:
+        min_values = [-5, -5]
     count = 0
     position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values)
     last = []
     for index, att in enumerate(position):
-        print("index:", index)
-        print("att:", att)
+        # print("index:", index)
+        # print("att:", att)
         last.append([att[-1], index])
     last.sort()
-    print("Last:", last)
+    # print("Last:", last)
     arr_last = []
     for i in last:
         arr_last.append(i[-1])
-    print("arr_last:", arr_last)
+    # print("arr_last:", arr_last)
     position_sorted = []
     for i in arr_last:
         position_sorted.append(
             position[i]
         )
-    print("position_sorted:", position_sorted)
+    # print("position_sorted:", position_sorted)
 
     best_global = position_sorted[0]
-    print("best_global:", best_global)
+    # print("best_global:", best_global)
     x = best_global.copy()
     for loop in range(iteration + 1):
         print(f"Vòng lặp thứ {loop}, f(x) = {best_global}")
-        print("x: ", x)
+        # print("x: ", x)
         for i in range(0, len(position)):
             nb_flower_1 = random.randint(0, len(position) - 1)
             nb_flower_2 = random.randint(0, len(position) - 1)
@@ -217,7 +221,7 @@ def flower_pollination_algorithms(flowers=3, min_values=[-5, -5], max_values=[5,
             r = random.uniform(0, 1)
 
             if r < p:
-                print("Global")
+                # print("Global")
                 x = pollination_global(
                     population=position,
                     best_global=best_global,
@@ -225,24 +229,24 @@ def flower_pollination_algorithms(flowers=3, min_values=[-5, -5], max_values=[5,
                     gamma=gamma,
                     lamb=lamb,
                     min_value=min_values,
-                    max_value=min_values,
+                    max_value=max_values,
                     function=function
                 )
             else:
-                print("Local")
+                # print("Local")
                 x = pollination_local(
                     population=position,
                     flower=i,
                     function=function,
-                    max_value=min_values,
+                    max_value=max_values,
                     min_value=min_values,
                     nb_flower2=nb_flower_2,
                     nb_flower1=nb_flower_1,
                     best_global=best_global
                 )
-            print("x: ", x)
+            # print("x: ", x)
             if x[-1] <= position[i][-1]:
-                print("Changed")
+                # print("Changed")
                 for j in range(0, len(position[0])):
                     position[i][j] = x[j]
             val = sorted(position, key=lambda x: x[-1])[0]
