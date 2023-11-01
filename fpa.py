@@ -113,7 +113,9 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
             value = max_value[j]
 
         x[j] = value
-    # x[-1] = function(x[0:len(min_value)])
+    print("x prev", x)
+    x[-1] = function(x[0:len(min_value)])
+    print("x aft", x)
     return x
 
 
@@ -129,3 +131,55 @@ pg = pollination_global(
     lamb=1.4
 )
 print("Global pollination:", pg)
+
+
+# pollination local
+def pollination_local(population: [], best_global: [], flower, nb_flower1=None, nb_flower2=None, min_value=None,
+                      max_value=None, function=fitness_function()):
+    if nb_flower1 is None:
+        nb_flower1 = 0
+    if nb_flower2 is None:
+        nb_flower2 = 1
+    x = best_global.copy()
+    for j in range(0, len(min_value)):
+        r = random.uniform(0, 1)
+        val = population[flower][j] + r * (population[nb_flower1][j] - population[nb_flower2][j])
+        if val < min_value[j]:
+            val = min_value[j]
+        if val > max_value[j]:
+            val = max_value[j]
+        x[j] = val
+    x[-1] = function(x[0:len(min_value)])
+    return x
+
+
+pl = pollination_local(
+    population=test_init_population,
+    best_global=[1, 4, 5],
+    flower=0,
+    nb_flower1=0,
+    nb_flower2=1,
+    function=six_hump_camel_back,
+    min_value=[-5, -5],
+    max_value=[5, 5],
+)
+print("Pollination locally:", pl)
+
+# Flower Pollination Algorithms
+def flower_poolination_algorithms(flowers = 3, min_values = [-5, -5], max_values = [5, 5], iteration=50, gamma = 0.5, lamb=1.4, p = 0.8, function=six_hump_camel_back):
+    """
+
+    :param flowers:
+    :param min_values:
+    :param max_values:
+    :param iteration:
+    :param gamma:
+    :param lamb:
+    :param p:
+    :param function:
+    :return:
+    """
+
+    count = 0
+    position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values)
+    best_global = []
