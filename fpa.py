@@ -6,6 +6,13 @@ def fitness_function():
     pass
 
 
+def six_hump_camel_back(variables_value=None):
+    if variables_value is None:
+        variables_value = [0, 0]
+    return 4 * variables_value[0] ** 2 - 2.1 * variables_value[0] ** 4 + (1 / 3) * variables_value[0] ** 6 + \
+        variables_value[0] * variables_value[1] - 4 * variables_value[1] ** 2 + 4 * variables_value[1] ** 4
+
+
 def init_population(N=None, min_val=None, max_val=None, function=fitness_function()):
     """
     Init population cho tập N bông hoa:
@@ -26,21 +33,32 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
     position = []
     temp = []
     for i in range(0, N):
-        temp.clear()
+        temp = []
         for j in range(0, len(min_val)):
             # print("j: ", j)
+            random_val = random.uniform(min_val[j], max_val[j])
+            # print("random_val: ", random_val)
             temp.append(
-                random.uniform(min_val[j], max_val[j])
+                random_val
             )
-
-            temp.append(0.0)
+        # print("Temp: ", temp)
         position.append(temp)
-    # print("Position: ", position)
+    print("Position: ", position)
+    for i in range(0, N):
+        val = position[i][0: len(position[i])]
+        # print("val: ",val)
+        temp = function(
+            val
+        )
+        # print("Temp: ",temp)
+        position[i].append(
+            temp
+        )
     return position
 
 
 # test:
-test_init_population = init_population(N=5)
+test_init_population = init_population(N=3, function=six_hump_camel_back)
 print(test_init_population)
 
 
@@ -87,3 +105,27 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
 
     x = best_global.copy()
     # TODO: continues
+    for j in range(0, len(min_value)):
+        value = population[flower][j] + gamma * levy_flight(lamb) * (population[flower][j] - best_global[j])
+        if value < min_value[j]:
+            value = min_value[j]
+        if value > max_value[j]:
+            value = max_value[j]
+
+        x[j] = value
+    # x[-1] = function(x[0:len(min_value)])
+    return x
+
+
+# test pollination_global
+pg = pollination_global(
+    population=test_init_population,
+    function=six_hump_camel_back,
+    best_global=[1, 4, 5],
+    flower=0,
+    max_value=[5, 5],
+    min_value=[-5, -5],
+    gamma=0.5,
+    lamb=1.4
+)
+print("Global pollination:", pg)
