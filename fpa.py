@@ -113,9 +113,9 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
             value = max_value[j]
 
         x[j] = value
-    print("x prev", x)
+    # print("x prev", x)
     x[-1] = function(x[0:len(min_value)])
-    print("x aft", x)
+    # print("x aft", x)
     return x
 
 
@@ -136,6 +136,7 @@ print("Global pollination:", pg)
 # pollination local
 def pollination_local(population: [], best_global: [], flower, nb_flower1=None, nb_flower2=None, min_value=None,
                       max_value=None, function=fitness_function()):
+    # print(f"nb_flower1 {nb_flower1}, nb_flower2 {nb_flower2}")
     if nb_flower1 is None:
         nb_flower1 = 0
     if nb_flower2 is None:
@@ -165,8 +166,10 @@ pl = pollination_local(
 )
 print("Pollination locally:", pl)
 
+
 # Flower Pollination Algorithms
-def flower_poolination_algorithms(flowers = 3, min_values = [-5, -5], max_values = [5, 5], iteration=50, gamma = 0.5, lamb=1.4, p = 0.8, function=six_hump_camel_back):
+def flower_pollination_algorithms(flowers=3, min_values=[-5, -5], max_values=[5, 5], iteration=50, gamma=0.5, lamb=1.4,
+                                  p=0.8, function=six_hump_camel_back):
     """
 
     :param flowers:
@@ -182,4 +185,73 @@ def flower_poolination_algorithms(flowers = 3, min_values = [-5, -5], max_values
 
     count = 0
     position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values)
-    best_global = []
+    last = []
+    for index, att in enumerate(position):
+        print("index:", index)
+        print("att:", att)
+        last.append([att[-1], index])
+    last.sort()
+    print("Last:", last)
+    arr_last = []
+    for i in last:
+        arr_last.append(i[-1])
+    print("arr_last:", arr_last)
+    position_sorted = []
+    for i in arr_last:
+        position_sorted.append(
+            position[i]
+        )
+    print("position_sorted:", position_sorted)
+
+    best_global = position_sorted[0]
+    print("best_global:", best_global)
+    x = best_global.copy()
+    for loop in range(iteration + 1):
+        print(f"Vòng lặp thứ {loop}, f(x) = {best_global}")
+        print("x: ", x)
+        for i in range(0, len(position)):
+            nb_flower_1 = random.randint(0, len(position) - 1)
+            nb_flower_2 = random.randint(0, len(position) - 1)
+            while nb_flower_1 == nb_flower_2:
+                nb_flower_2 = random.randint(0, len(position) - 1)
+            r = random.uniform(0, 1)
+
+            if r < p:
+                print("Global")
+                x = pollination_global(
+                    population=position,
+                    best_global=best_global,
+                    flower=i,
+                    gamma=gamma,
+                    lamb=lamb,
+                    min_value=min_values,
+                    max_value=min_values,
+                    function=function
+                )
+            else:
+                print("Local")
+                x = pollination_local(
+                    population=position,
+                    flower=i,
+                    function=function,
+                    max_value=min_values,
+                    min_value=min_values,
+                    nb_flower2=nb_flower_2,
+                    nb_flower1=nb_flower_1,
+                    best_global=best_global
+                )
+            print("x: ", x)
+            if x[-1] <= position[i][-1]:
+                print("Changed")
+                for j in range(0, len(position[0])):
+                    position[i][j] = x[j]
+            val = sorted(position, key=lambda x: x[-1])[0]
+            # print("Val: ", val)
+            if best_global[-1] > val[-1]:
+                best_global = val
+
+    return best_global
+
+
+fpa = flower_pollination_algorithms(flowers=5, min_values=[-5, -5], max_values=[5, 5], iteration=50, gamma=0.1,
+                                    lamb=1.5, p=0.8, function=six_hump_camel_back)
