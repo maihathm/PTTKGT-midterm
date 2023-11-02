@@ -3,14 +3,6 @@ import random
 import os
 import functions
 # Function: Tour Distance
-# def distance_calc(distance_matrix, city_tour):
-#     distance = 0
-#     for k in range(0, len(city_tour[0])-1):
-#         m        = k + 1
-#         # distance = distance + distance_matrix[(city_tour[0].index(city_tour[0][k]))-1][(city_tour[0].index(city_tour[0][m]))-1]     
-#         distance = distance + distance_matrix[city_tour[0][k] - 1][city_tour[0][m] - 1]     
-#     return distance
-
 def distance_calc(distance_matrix, city_tour):
     distance = 0
     for k in range(0, len(city_tour[0]) - 1):
@@ -78,7 +70,7 @@ def city_probability(h, thau, city = 0, alpha = 1, beta = 2, city_list = []):
             probability[i][2] = probability[i][1] + probability[i - 1][2]     
     if (len(city_list) > 0):
         for i in range(0, len(city_list)):    
-            probability[(city_list.index(city_list[i]))-1][2] = 0.0
+            probability[(city_list[i])-1][2] = 0.0
     return probability
 
 # Function: Select Next City
@@ -99,12 +91,12 @@ def update_thau(distance_matrix, thau, city_list = []):
     city_tour=random_number , *city_tour, random_number
     for i in range(0, len(city_list)-1):
         j        = i + 1
-        distance = distance + distance_matrix[city_tour.index(city_list[i])-1][city_tour.index(city_list[j])-1] 
+        distance = distance + distance_matrix[city_list[i]-1][city_list[j]-1] 
     pheromone = 1  
     for i in range(0, len(city_list)-1):
         j          = i + 1 
-        m          = city_tour.index(city_list[i])-1
-        n          = city_tour.index(city_list[j])-1
+        m          = city_list[i]-1
+        n          = city_list[j]-1
         thau[m][n] = thau[m][n] + pheromone        
     return thau
 
@@ -127,7 +119,7 @@ def ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_sear
         path_distance = 0
         for i in range(0, len(city_list)-1):
             j             = i + 1
-            path_distance = path_distance + distance_matrix[(city_list.index(city_list[i]))-1][(city_list.index(city_list[j]))-1]
+            path_distance = path_distance + distance_matrix[city_list[i]-1][city_list[j]-1]
         if (distance > path_distance):
             best_city_list     = copy.deepcopy(city_list)
             best_path_distance = path_distance
@@ -151,7 +143,7 @@ def ant_colony_optimization(distance_matrix, ants = 5, iterations = 50, alpha = 
     while (count <= iterations):
         if (verbose == True and count > 0):
             print('Iteration = ', count, 'Distance = ', round(best_route[1], 2))       
-            # print(best_route)     
+            print(best_route)     
         city_list, path_distance, thau = ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_search)
         thau=functions.matrix_multiply(thau, 1 - decay)
         if (distance > path_distance):
