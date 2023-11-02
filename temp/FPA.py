@@ -64,7 +64,7 @@ def flower_pollination_algorithm(flowers = 3, min_values = [-5,-5], max_values =
             if (best_global[-1] > value[-1]):
                 best_global = np.copy(value) 
         count = count + 1       
-    print(best_global)    
+    # print(best_global)    
     return best_global
 
 ######################## Part 1 - Usage ####################################

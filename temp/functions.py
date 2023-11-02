@@ -33,5 +33,10 @@ def create_empty_matrix(rows, cols):
     for col in range(cols):
       matrix[row].append(0)
   return matrix
-
+def matrix_multiply(matrix, scalar):
+    result = []
+    for row in matrix:
+        new_row = [element * scalar for element in row]
+        result.append(new_row)
+    return result
 

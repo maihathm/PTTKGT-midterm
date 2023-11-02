@@ -82,14 +82,17 @@ def city_selection(probability_matrix, city_list = []):
 # Function: Update Thau
 def update_thau(distance_matrix, thau, city_list = []):
     distance = 0
+    city_tour=copy.deepcopy(city_list)
+    random_number=0
+    city_tour=random_number , *city_tour, random_number
     for i in range(0, len(city_list)-1):
         j        = i + 1
-        distance = distance + distance_matrix[(city_list[i])-1][distance_matrix.index(city_list[j])-1] 
+        distance = distance + distance_matrix[city_tour.index(city_list[i])-1][city_tour.index(city_list[j])-1] 
     pheromone = 1  
     for i in range(0, len(city_list)-1):
         j          = i + 1 
-        m          = city_list[i]-1
-        n          = city_list[j]-1
+        m          = city_tour.index(city_list[i])-1
+        n          = city_tour.index(city_list[j])-1
         thau[m][n] = thau[m][n] + pheromone        
     return thau
 
@@ -140,7 +143,7 @@ def ant_colony_optimization(distance_matrix, ants = 5, iterations = 50, alpha = 
             print('Iteration = ', count, 'Distance = ', round(best_route[1], 2))       
             # print(best_route)     
         city_list, path_distance, thau = ants_path(distance_matrix, h, thau, alpha, beta, distance_matrix, ants, local_search)
-        thau                           = thau*(1 - decay)
+        thau=functions.matrix_multiply(thau, 1 - decay)
         if (distance > path_distance):
             best_route = copy.deepcopy([city_list])
             best_route.append(path_distance)

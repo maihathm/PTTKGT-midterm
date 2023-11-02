@@ -2,12 +2,34 @@ import FPA
 import distance
 import pandas as pd
 import ACO
+import os
 
-coordinates = pd.read_csv('TSP-02-Coordinates.txt', sep = '\t')
-coordinates = coordinates.values
+# Đường dẫn đến tệp chứa dữ liệu
+file_path = 'TSP-02-Coordinates.txt'
 
-distance_matrix = distance.build_distance_matrix(coordinates)
-print(distance_matrix)
+# Kiểm tra xem tệp tồn tại
+if os.path.exists(file_path):
+    # Mở tệp để đọc
+    with open(file_path, 'r') as file:
+        # Đọc dữ liệu từ tệp và tách thành các dòng
+        lines = file.readlines()
+
+        # Loại bỏ dòng đầu tiên (tiêu đề, nếu có)
+        lines = lines[1:]
+
+        # Khởi tạo danh sách để lưu dữ liệu
+        data = {}
+
+        # Lặp qua từng dòng và tách dữ liệu x và y bằng dấu tab
+        i=0
+        for line in lines:
+            x, y = map(float, line.strip().split('\t'))
+            data[i]=(x, y)
+            i+=1
+else:
+    print(f'Tệp {file_path} không tồn tại.')
+
+distance_matrix = distance.build_distance_matrix(data)
 parameters = {
               'ants': 15,
               'iterations': 100,
