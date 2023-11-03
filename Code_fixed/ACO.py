@@ -10,7 +10,7 @@ import functions
 #         # distance = distance + distance_matrix[(city_tour[0].index(city_tour[0][k]))-1][(city_tour[0].index(city_tour[0][m]))-1]     
 #         distance = distance + distance_matrix[city_tour[0][k] - 1][city_tour[0][m] - 1]     
 #     return distance
-
+random.seed(10)
 def distance_calc(distance_matrix, city_tour):
     distance = 0
     for k in range(0, len(city_tour[0]) - 1):
@@ -63,22 +63,32 @@ def attractiveness(distance_matrix):
     return h
 
 # Function: Probability Matrix 
-def city_probability(h, thau, city = 0, alpha = 1, beta = 2, city_list = []):
-    # probability = np.zeros((h.shape[0], 3)) # ['atraction','probability','cumulative_probability']
-    probability = functions.create_empty_matrix(len(h),3)
-    for i in range(0, len(probability)):
-        if (i+1 not in city_list):
-            probability[i][0] = ((thau[i][city])**alpha)*((h[i][city])**beta)
-    for i in range(0, len(probability)):
-        if (i+1 not in city_list and sum(probability[:][0]) != 0):
-            probability[i][1] = probability[i][0]/sum(probability[:][0])
-        if (i == 0):
-            probability[i][2] = probability[i][1] 
+# Function to calculate city probability without using NumPy
+def city_probability(h, thau, city=0, alpha=1, beta=2, city_list=[]):
+    num_cities = len(h)
+    probability = [[0, 0, 0] for _ in range(num_cities)]
+    total_attraction=0
+    for i in range(num_cities):
+        total_attraction=sum([probability[i][0] for i in range(0,len(probability))])
+        if i + 1 not in city_list:
+            attraction = (thau[i][city] ** alpha) * (h[i][city] ** beta)
+            probability[i][0] = attraction
+    for i in range(num_cities):
+        if i + 1 not in city_list and total_attraction!=0:
+            temp_total=sum([probability[i][0] for i in range(0,len(probability))])
+            probability[i][1] = probability[i][0] / temp_total
+        if i == 0:
+            probability[i][2] = probability[i][1]
         else:
-            probability[i][2] = probability[i][1] + probability[i - 1][2]     
-    if (len(city_list) > 0):
-        for i in range(0, len(city_list)):    
-            probability[(city_list.index(city_list[i]))-1][2] = 0.0
+            probability[i][2] = probability[i][1] + probability[i - 1][2]
+
+    if len(city_list) > 0:
+        for i in range(len(city_list)):
+            probability[city_list[i] - 1][2] = 0.0
+    
+    import numpy as np
+    with open('temp.txt', 'a') as f:
+            f.write("\n"+str(np.array(probability)))
     return probability
 
 # Function: Select Next City
@@ -87,6 +97,12 @@ def city_selection(probability_matrix, city_list = []):
     city   = 0
     for i in range(0, len(probability_matrix)):
         if (random <= probability_matrix[i][2] and i+1 not in city_list):
+        #   print("---------------")
+        #   print(random,probability_matrix[i][2])
+        #   print("---------------")
+        #   print("===============")
+        #   print(random,probability_matrix[i][2])
+        #   print("===============")
           city = i + 1
           break     
     return city
@@ -116,10 +132,11 @@ def ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_sear
     for ant in range(0, ants):
         city_list = []
         initial   = random.randrange(1, len(distance_matrix))
-        city_list.append(initial)     
+        city_list.append(initial)
         for i in range(0, len(distance_matrix) - 1):
             probability = city_probability(h, thau, city = i, alpha = alpha, beta = beta, city_list = city_list)
             path_point  = city_selection(probability, city_list = city_list)
+            # print(probability) 
             if (path_point == 0):
                 path_point = [value for value in full_list if value not in city_list][0]
             city_list.append(path_point)
@@ -127,7 +144,7 @@ def ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_sear
         path_distance = 0
         for i in range(0, len(city_list)-1):
             j             = i + 1
-            path_distance = path_distance + distance_matrix[(city_list.index(city_list[i]))-1][(city_list.index(city_list[j]))-1]
+            path_distance = path_distance + distance_matrix[(city_list[i])-1][(city_list[j])-1]
         if (distance > path_distance):
             best_city_list     = copy.deepcopy(city_list)
             best_path_distance = path_distance

@@ -16,7 +16,7 @@ import random
 import os
 
 ############################################################################
-
+random.seed(10)
 # Function: Tour Distance
 def distance_calc(distance_matrix, city_tour):
     distance = 0
@@ -70,27 +70,34 @@ def attractiveness(distance_matrix):
 # Function: Probability Matrix 
 def city_probability(h, thau, city = 0, alpha = 1, beta = 2, city_list = []):
     probability = np.zeros((h.shape[0], 3)) # ['atraction','probability','cumulative_probability']
+    # print(city_list)
     for i in range(0, probability.shape[0]):
         if (i+1 not in city_list):
             probability[i, 0] = (thau[i, city]**alpha)*(h[i, city]**beta)
     for i in range(0, probability.shape[0]):
         if (i+1 not in city_list and probability[:,0].sum() != 0):
             probability[i, 1] = probability[i, 0]/probability[:,0].sum()
+            
         if (i == 0):
             probability[i, 2] = probability[i, 1] 
         else:
             probability[i, 2] = probability[i, 1] + probability[i - 1, 2]     
     if (len(city_list) > 0):
         for i in range(0, len(city_list)):
-            probability[city_list[i]-1, 2] = 0.0            
+            probability[city_list[i]-1, 2] = 0.0    
+    with open('temp.txt', 'a') as f:
+            f.write("\n"+str(probability))        
     return probability
 
 # Function: Select Next City
 def city_selection(probability_matrix, city_list = []):
-    random = int.from_bytes(os.urandom(8), byteorder = 'big') / ((1 << 64) - 1)
+    randoms = random.random()
     city   = 0
+    # for i in probability_matrix:
+    #     with open('temp.txt', 'a') as f:
+    #            f.write("\n"+str(i))
     for i in range(0, probability_matrix.shape[0]):
-        if (random <= probability_matrix[i, 2] and i+1 not in city_list):
+        if (randoms <= probability_matrix[i, 2] and i+1 not in city_list):
           city = i + 1
           break     
     return city
@@ -117,10 +124,11 @@ def ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_sear
     for ant in range(0, ants):
         city_list = []
         initial   = random.randrange(1, distance_matrix.shape[0])
-        city_list.append(initial)           
+        city_list.append(initial)        
         for i in range(0, distance_matrix.shape[0] - 1):
             probability = city_probability(h, thau, city = i, alpha = alpha, beta = beta, city_list = city_list)
             path_point  = city_selection(probability, city_list = city_list)
+            # print(probability) 
             if (path_point == 0):
                 path_point = [value for value in full_list if value not in city_list][0]
             city_list.append(path_point)

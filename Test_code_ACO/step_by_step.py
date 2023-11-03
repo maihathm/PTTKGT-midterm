@@ -21,7 +21,7 @@ city_probability = ACO.city_probability(h, thau, city = i, alpha = alpha, beta =
 # print(city_probability)
 
 city_selection = ACO.city_selection(city_probability, city_list)
-print(city_selection)
+# print(city_selection)
 
 update_thau = ACO.update_thau(test.distance_matrix, thau, city_list)
 # print(update_thau)
@@ -34,6 +34,6 @@ local_search = True
 ants_path = ACO.ants_path(test.distance_matrix, h, thau, alpha, beta, full_list, ants, local_search)
 # print(ants_path)
 
-# ant_colony_optimization = ACO.ant_colony_optimization(test.distance_matrix, ants = 5, iterations = 50, alpha = 1, beta = 2, decay = 0.05, local_search = True, verbose = True)
+ant_colony_optimization = ACO.ant_colony_optimization(test.distance_matrix, ants = 5, iterations = 50, alpha = 1, beta = 2, decay = 0.05, local_search = True, verbose = True)
 # print(ant_colony_optimization)
 
