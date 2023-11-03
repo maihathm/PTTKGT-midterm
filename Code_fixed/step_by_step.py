@@ -1,15 +1,17 @@
 import ACO
-import test
 import functions
+import test
 
-city_tour = [[28, 52, 13, 27, 33, 51, 9, 10, 19, 45, 18, 20, 17, 1, 16, 41, 8, 22, 3, 50, 5, 46, 35, 37, 49, 43, 40, 39, 24, 44, 4, 26, 47, 38, 48, 32, 6, 15, 34, 31, 36, 23, 30, 42, 2, 7, 21, 29, 25, 12, 14, 11, 28], 16506.708922438545]
+city_tour = [
+    [28, 52, 13, 27, 33, 51, 9, 10, 19, 45, 18, 20, 17, 1, 16, 41, 8, 22, 3, 50, 5, 46, 35, 37, 49, 43, 40, 39, 24, 44,
+     4, 26, 47, 38, 48, 32, 6, 15, 34, 31, 36, 23, 30, 42, 2, 7, 21, 29, 25, 12, 14, 11, 28], 16506.708922438545]
 
 # Oke
 distance_calc = ACO.distance_calc(test.distance_matrix, city_tour)
 # print(distance_calc)
 
 # Oke
-local_search_2_opt = ACO.local_search_2_opt(test.distance_matrix, city_tour, recursive_seeding = -1)
+local_search_2_opt = ACO.local_search_2_opt(test.distance_matrix, city_tour, recursive_seeding=-1)
 # print(local_search_2_opt)
 
 # Oke
@@ -22,8 +24,9 @@ thau = functions.create_empty_matrix_ones(len(test.distance_matrix), len(test.di
 i = 2
 alpha = 1
 beta = 2
-city_list = [47, 22, 7, 41, 25, 15, 24, 2, 39, 10, 9, 13, 11, 12, 52, 6, 50, 19, 45, 4, 21, 37, 1, 20, 5, 16, 28, 26, 51, 3, 46, 18, 49, 43, 35, 34, 44, 40, 48, 36, 38, 8, 33, 31, 30, 32, 23, 29, 27, 42, 17]
-city_probability = ACO.city_probability(h, thau, city = i, alpha = alpha, beta = beta, city_list = city_list)
+city_list = [47, 22, 7, 41, 25, 15, 24, 2, 39, 10, 9, 13, 11, 12, 52, 6, 50, 19, 45, 4, 21, 37, 1, 20, 5, 16, 28, 26,
+             51, 3, 46, 18, 49, 43, 35, 34, 44, 40, 48, 36, 38, 8, 33, 31, 30, 32, 23, 29, 27, 42, 17]
+city_probability = ACO.city_probability(h, thau, city=i, alpha=alpha, beta=beta, city_list=city_list)
 # print(city_probability)
 
 # Hàm này đang lỗi(Lỗi j chưa tìm ra)

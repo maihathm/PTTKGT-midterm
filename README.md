@@ -11,6 +11,7 @@
 *Design and analysis of algorithms for the Traverling Salesman Problem.*
 
 ## Todo list:
+
 - [x] Choose papper
 - [ ] Format
 - [ ] Define the problem
@@ -19,5 +20,6 @@
 - [ ] Question-Answering Session
 
 ## Resources:
+
 - [WORD: Docx for draft](https://1drv.ms/w/s!AopBSjBC43Bllk8gC9U_5nbRvQOo?e=7rUwcX)
 - Power point pptx for presentation

@@ -1,7 +1,8 @@
-import random
 import math
+import random
 
 
+# TODO: Kiểm tra step by step từng hàm để verifier nó chạy đúng
 def fitness_function():
     pass
 
@@ -259,3 +260,4 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
 
 fpa = flower_pollination_algorithms(flowers=5, min_values=[-5, -5], max_values=[5, 5], iteration=50, gamma=0.1,
                                     lamb=1.5, p=0.8, function=six_hump_camel_back)
+print(f"FPA {fpa}")

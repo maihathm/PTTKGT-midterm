@@ -30,8 +30,8 @@ Updating pheromones :
     
 '''
 
-import functions
 import data
+import functions
 
 # Graph (list of the cities, their neighbors, the distance and pheromone level between each neighbors)
 graph = data.graphGR17
