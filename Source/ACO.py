@@ -3,45 +3,9 @@ import os
 import random
 
 import functions
+import two_opt
 
-
-# Function: Tour Distance
-def distance_calc(distance_matrix, city_tour):
-    distance = 0
-    for k in range(0, len(city_tour[0]) - 1):
-        m = k + 1
-        distance = distance + distance_matrix[city_tour[0].index(city_tour[0][k])][city_tour[0].index(city_tour[0][m])]
-    return distance
-
-
-# Function: 2_opt
-def local_search_2_opt(distance_matrix, city_tour, recursive_seeding=-1):
-    if (recursive_seeding < 0):
-        count = -2
-    else:
-        count = 0
-    city_list = copy.deepcopy(city_tour)
-    distance = city_list[1] * 2
-    while (count < recursive_seeding):
-        best_route = copy.deepcopy(city_list)
-        seed = copy.deepcopy(city_list)
-        for i in range(0, len(city_list[0]) - 2):
-            for j in range(i + 1, len(city_list[0]) - 1):
-                best_route[0][i:j + 1] = list(reversed(best_route[0][i:j + 1]))
-                best_route[0][-1] = best_route[0][0]
-                best_route[1] = distance_calc(distance_matrix, best_route)
-                if (city_list[1] > best_route[1]):
-                    city_list = copy.deepcopy(best_route)
-                best_route = copy.deepcopy(seed)
-        count = count + 1
-        if (distance > city_list[1] and recursive_seeding < 0):
-            distance = city_list[1]
-            count = -2
-            recursive_seeding = -1
-        elif (city_list[1] >= distance and recursive_seeding < 0):
-            count = -1
-            recursive_seeding = -2
-    return city_list[0], city_list[1]
+random.seed(10)
 
 
 # Function: Initial Attractiveness
@@ -58,22 +22,28 @@ def attractiveness(distance_matrix):
 
 # Function: Probability Matrix
 def city_probability(h, thau, city=0, alpha=1, beta=2, city_list=[]):
-    # probability = np.zeros((h.shape[0], 3)) # ['atraction','probability','cumulative_probability']
-    probability = functions.create_empty_matrix(len(h), 3)
-    for i in range(0, len(probability)):
-        if (i + 1 not in city_list):
-            probability[i][0] = (thau[i][city] ** alpha) * (h[i][city] ** beta)
-    for i in range(0, len(probability)):
-        if (i + 1 not in city_list and sum(probability[:][0]) != 0):
-            probability[i][1] = probability[i][0] / sum(probability[:][0])
-        if (i == 0):
+    num_cities = len(h)
+    probability = [[0, 0, 0] for _ in range(num_cities)]
+    total_attraction = 0
+    for i in range(num_cities):
+        total_attraction = sum([probability[i][0] for i in range(0, len(probability))])
+        if i + 1 not in city_list:
+            attraction = (thau[i][city] ** alpha) * (h[i][city] ** beta)
+            probability[i][0] = attraction
+
+    for i in range(num_cities):
+        if i + 1 not in city_list and total_attraction != 0:
+            temp_total = sum([probability[i][0] for i in range(0, len(probability))])
+            probability[i][1] = probability[i][0] / temp_total
+        if i == 0:
             probability[i][2] = probability[i][1]
         else:
             probability[i][2] = probability[i][1] + probability[i - 1][2]
-    if (len(city_list) > 0):
-        for i in range(0, len(city_list)):
-            # probability[city_list[i]-1][2] = 0.0        
-            probability[city_list.index(city_list[i])][2] = 0.0
+
+    if len(city_list) > 0:
+        for i in range(len(city_list)):
+            probability[city_list[i] - 1][2] = 0.0
+
     return probability
 
 
@@ -125,18 +95,16 @@ def ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_sear
         path_distance = 0
         for i in range(0, len(city_list) - 1):
             j = i + 1
-            # path_distance = path_distance + distance_matrix[city_list[i]-1][city_list[j]-1] 
-            path_distance = path_distance + distance_matrix[city_list.index(city_list[i])][
-                city_list.index(city_list[j])]
-        if (distance > path_distance):
+            path_distance = path_distance + distance_matrix[(city_list[i]) - 1][(city_list[j]) - 1]
+        if distance > path_distance:
             best_city_list = copy.deepcopy(city_list)
             best_path_distance = path_distance
             distance = path_distance
     best_route = copy.deepcopy([best_city_list])
     best_route.append(best_path_distance)
     if (local_search == True):
-        best_city_list, best_path_distance = local_search_2_opt(distance_matrix, city_tour=best_route,
-                                                                recursive_seeding=-1)
+        best_city_list, best_path_distance = two_opt.local_search_2_opt(distance_matrix, city_tour=best_route,
+                                                                        recursive_seeding=-1)
     thau = update_thau(distance_matrix, thau, city_list=best_city_list)
 
     return best_city_list, best_path_distance, thau
@@ -147,17 +115,15 @@ def ant_colony_optimization(distance_matrix, ants=5, iterations=50, alpha=1, bet
                             verbose=True):
     count = 0
     best_route = []
-    # full_list   = range(1, distance_matrix.shape[0] + 1)
+    full_list = list(range(1, len(distance_matrix) + 1))
     distance = functions.sum_list(distance_matrix)
     h = attractiveness(distance_matrix)
-    # thau        = np.ones((len(distance_matrix), len(distance_matrix)))  
-    thau = functions.create_empty_matrix(len(distance_matrix), len(distance_matrix))
+    thau = functions.create_empty_matrix_ones(len(distance_matrix), len(distance_matrix))
     while (count <= iterations):
         if (verbose == True and count > 0):
             print('Iteration = ', count, 'Distance = ', round(best_route[1], 2))
             # print(best_route)     
-        city_list, path_distance, thau = ants_path(distance_matrix, h, thau, alpha, beta, distance_matrix, ants,
-                                                   local_search)
+        city_list, path_distance, thau = ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_search)
         thau = functions.matrix_multiply(thau, 1 - decay)
         if (distance > path_distance):
             best_route = copy.deepcopy([city_list])

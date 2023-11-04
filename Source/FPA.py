@@ -2,7 +2,6 @@ import math
 import random
 
 
-# TODO: Kiểm tra step by step từng hàm để verifier nó chạy đúng
 def fitness_function():
     pass
 
@@ -12,6 +11,12 @@ def six_hump_camel_back(variables_value=None):
         variables_value = [0, 0]
     return 4 * variables_value[0] ** 2 - 2.1 * variables_value[0] ** 4 + (1 / 3) * variables_value[0] ** 6 + \
         variables_value[0] * variables_value[1] - 4 * variables_value[1] ** 2 + 4 * variables_value[1] ** 4
+
+
+# TODO: Test six_hump_camel_back
+# Test six_hump_camel_back
+a = six_hump_camel_back(variables_value=[0.0898, -0.7126])
+print("Six Hump Camel Back: ", a)  # Oke
 
 
 def init_population(N=None, min_val=None, max_val=None, function=fitness_function()):
@@ -32,7 +37,7 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
         min_val = [-5, -5]
 
     position = []
-    temp = []
+    # temp = []
     for i in range(0, N):
         temp = []
         for j in range(0, len(min_val)):
@@ -58,9 +63,9 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
     return position
 
 
-# test:
-test_init_population = init_population(N=3, function=six_hump_camel_back)
-print(test_init_population)
+# TODO: Check init_population
+test_init_population = init_population(N=3, min_val=[-5, -5], max_val=[5, 5], function=six_hump_camel_back)
+print("Test init population: ", test_init_population)
 
 
 # Lévy flight
@@ -84,7 +89,7 @@ def levy_flight(beta=None):
 
 # test Lévy flight
 levy_ = levy_flight(beta=1.5)
-print(levy_)
+print("Levy flight: ", levy_)  # 0.005528715490671566 -> Oke
 
 
 # pollination global
@@ -105,9 +110,10 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
     """
 
     x = best_global.copy()
-    # TODO: continues
+    # print("x: ", x)
     for j in range(0, len(min_value)):
         value = population[flower][j] + gamma * levy_flight(lamb) * (population[flower][j] - best_global[j])
+        # print(value)
         if value < min_value[j]:
             value = min_value[j]
         if value > max_value[j]:
@@ -117,21 +123,24 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
     # print("x prev", x)
     x[-1] = function(x[0:len(min_value)])
     # print("x aft", x)
+    # print("x Polonation Global", x)
     return x
 
 
-# test pollination_global
-pg = pollination_global(
-    population=test_init_population,
-    function=six_hump_camel_back,
-    best_global=[1, 4, 5],
-    flower=0,
-    max_value=[5, 5],
-    min_value=[-5, -5],
-    gamma=0.5,
-    lamb=1.4
-)
-print("Global pollination:", pg)
+# --------------------------
+
+# # test pollination_global
+# pg = pollination_global(
+#     population=test_init_population,
+#     function=six_hump_camel_back,
+#     best_global=[1, 4, 5],
+#     flower=0,
+#     max_value=[5, 5],
+#     min_value=[-5, -5],
+#     gamma=0.5,
+#     lamb=1.4
+# )
+# print("Global pollination:", pg)  # Oke
 
 
 # pollination local
@@ -146,12 +155,16 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
     for j in range(0, len(min_value)):
         r = random.uniform(0, 1)
         val = population[flower][j] + r * (population[nb_flower1][j] - population[nb_flower2][j])
+        # print(val)
         if val < min_value[j]:
             val = min_value[j]
         if val > max_value[j]:
             val = max_value[j]
         x[j] = val
+    # print("x prev", x)
     x[-1] = function(x[0:len(min_value)])
+    # print("x aft", x)
+    # print("x Pollination Local", x)
     return x
 
 
@@ -190,26 +203,8 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
         min_values = [-5, -5]
     count = 0
     position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values)
-    last = []
-    for index, att in enumerate(position):
-        # print("index:", index)
-        # print("att:", att)
-        last.append([att[-1], index])
-    last.sort()
-    # print("Last:", last)
-    arr_last = []
-    for i in last:
-        arr_last.append(i[-1])
-    # print("arr_last:", arr_last)
-    position_sorted = []
-    for i in arr_last:
-        position_sorted.append(
-            position[i]
-        )
-    # print("position_sorted:", position_sorted)
-
-    best_global = position_sorted[0]
-    # print("best_global:", best_global)
+    best_global = sorted(position, key=lambda x: x[-1])[0]
+    # print("##best_global:", best_global)
     x = best_global.copy()
     for loop in range(iteration + 1):
         print(f"Vòng lặp thứ {loop}, f(x) = {best_global}")
@@ -235,6 +230,7 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
                 )
             else:
                 # print("Local")
+                # print("@@: ",best_global)
                 x = pollination_local(
                     population=position,
                     flower=i,
@@ -245,7 +241,10 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
                     nb_flower1=nb_flower_1,
                     best_global=best_global
                 )
+            # print("----------------")
             # print("x: ", x)
+            # print("position[i][-1]", position[i][-1])
+            # print(len(position[0]))
             if x[-1] <= position[i][-1]:
                 # print("Changed")
                 for j in range(0, len(position[0])):
@@ -254,10 +253,10 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
             # print("Val: ", val)
             if best_global[-1] > val[-1]:
                 best_global = val
-
+    # print("BEST GLOBAL: ", best_global)
     return best_global
 
 
-fpa = flower_pollination_algorithms(flowers=5, min_values=[-5, -5], max_values=[5, 5], iteration=50, gamma=0.1,
+fpa = flower_pollination_algorithms(flowers=5, min_values=[-5, -5], max_values=[5, 5], iteration=100, gamma=0.1,
                                     lamb=1.5, p=0.8, function=six_hump_camel_back)
-print(f"FPA {fpa}")
+print("fpa:", fpa)

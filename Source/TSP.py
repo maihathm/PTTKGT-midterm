@@ -1,9 +1,12 @@
 import os
 
-import distance
+import ACO
+import distance_matrix
 
 # Đường dẫn đến tệp chứa dữ liệu
-file_path = 'TSP-02-Coordinates.txt'
+# file_path = 'TSP-02-Coordinates.txt'
+# file_path = 'TSP-01.txt'
+file_path = 'TSP-02.txt'
 
 # Kiểm tra xem tệp tồn tại
 if os.path.exists(file_path):
@@ -27,10 +30,11 @@ if os.path.exists(file_path):
 else:
     print(f'Tệp {file_path} không tồn tại.')
 
-distance_matrix = distance.build_distance_matrix(data)
+distance_matrix = distance_matrix.build_distance_matrix(data)
+
 parameters = {
-    'ants': 15,
-    'iterations': 100,
+    'ants': 10,
+    'iterations': 50,
     'alpha': 1,
     'beta': 2,
     'decay': 0.05,
@@ -38,6 +42,6 @@ parameters = {
     'verbose': True
 }
 
-# route, distance = ACO.ant_colony_optimization(distance_matrix, **parameters)
+route, distance = ACO.ant_colony_optimization(distance_matrix, **parameters)
 
 # FPA.flower_pollination_algorithm(flowers = 25, min_values = [-5,-5], max_values = [5,5], iterations = 500, gama = 0.1, lamb = 1.5, p = 0.8, target_function = ACO.ant_colony_optimization(distance_matrix, **parameters))

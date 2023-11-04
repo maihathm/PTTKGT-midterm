@@ -1,11 +1,3 @@
-# import numpy  as np
-# # Function: Build Distance Matrix
-# def build_distance_matrix(coordinates):
-#    a = coordinates
-#    b = a.reshape(np.prod(a.shape[:-1]), 1, a.shape[-1])
-#    return np.sqrt(np.einsum('ijk,ijk->ij',  b - a,  b - a)).squeeze()
-
-# Function: Build Distance Matrix
 import math
 
 
