@@ -1,7 +1,7 @@
-import os
-
-import ACO
+import FPA
 import distance_matrix
+import ACO
+import os
 
 # Đường dẫn đến tệp chứa dữ liệu
 # file_path = 'TSP-02-Coordinates.txt'
@@ -22,25 +22,25 @@ if os.path.exists(file_path):
         data = {}
 
         # Lặp qua từng dòng và tách dữ liệu x và y bằng dấu tab
-        i = 0
+        i=0
         for line in lines:
             x, y = map(float, line.strip().split('\t'))
-            data[i] = (x, y)
-            i += 1
+            data[i]=(x, y)
+            i+=1
 else:
     print(f'Tệp {file_path} không tồn tại.')
 
 distance_matrix = distance_matrix.build_distance_matrix(data)
 
 parameters = {
-    'ants': 10,
-    'iterations': 50,
-    'alpha': 1,
-    'beta': 2,
-    'decay': 0.05,
-    'local_search': True,
-    'verbose': True
-}
+              'ants': 10,
+              'iterations': 50,
+              'alpha':1,
+              'beta':2,
+              'decay':0.05,
+              'local_search': True,
+              'verbose': True
+             }
 
 route, distance = ACO.ant_colony_optimization(distance_matrix, **parameters)
 
