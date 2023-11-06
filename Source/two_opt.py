@@ -3,6 +3,16 @@ import copy
 
 
 def distance_calc(distance_matrix, city_tour):
+    """Tính tổng khoảng cách của một tour du lịch.
+
+  Args:
+    distance_matrix: Ma trận khoảng cách giữa các thành phố.
+    city_tour: Một tour du lịch, được biểu diễn bằng một danh sách các thành phố
+      theo thứ tự tham quan.
+
+  Returns:
+    Tổng khoảng cách của tour du lịch.
+  """
     distance = 0
     for k in range(0, len(city_tour[0]) - 1):
         m = k + 1
@@ -14,6 +24,20 @@ def distance_calc(distance_matrix, city_tour):
 
 # Function: 2_opt
 def local_search_2_opt(distance_matrix, city_tour, recursive_seeding=-1):
+    """Tìm kiếm cục bộ 2-opt để cải thiện tour du lịch.
+
+  Args:
+    distance_matrix: Ma trận khoảng cách giữa các thành phố.
+    city_tour: Một tour du lịch, được biểu diễn bằng một danh sách các thành phố
+      theo thứ tự tham quan.
+    recursive_seeding: Số lần lặp của thuật toán tìm kiếm cục bộ 2-opt.
+      Nếu `recursive_seeding < 0`, thuật toán sẽ chạy cho đến khi không thể cải thiện
+      tour du lịch được nữa.
+
+  Returns:
+    Một tour du lịch được cải thiện, được biểu diễn bằng một danh sách các thành phố
+      theo thứ tự tham quan.
+  """
     if (recursive_seeding < 0):
         count = -2
     else:

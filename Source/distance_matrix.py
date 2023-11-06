@@ -1,12 +1,18 @@
 import math
 
-# Function: Build Distance Matrix
 def build_distance_matrix(data):
-# Độ dài và độ rộng của ma trận
+    """Tạo ma trận khoảng cách giữa các điểm trong dữ liệu.
+
+  Args:
+    data: Danh sách các điểm, mỗi điểm được biểu diễn bằng một danh sách hai phần tử,
+      phần tử đầu tiên là tọa độ x và phần tử thứ hai là tọa độ y.
+
+  Returns:
+    Ma trận khoảng cách giữa các điểm trong dữ liệu.
+  """
     num_rows = len(data)
     num_columns = len(data)
 
-    # Tạo ma trận với giá trị ban đầu bằng 0 bằng cách sử dụng danh sách lồng nhau
     matrix = []
     for i in range(num_rows):
         row = []
