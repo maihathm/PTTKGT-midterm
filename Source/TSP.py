@@ -2,6 +2,7 @@
 import distance_matrix
 import ACO
 import os
+import time
 
 # Đường dẫn đến tệp chứa dữ liệu
 # file_path = 'TSP-02-Coordinates.txt'
@@ -42,6 +43,22 @@ parameters = {
               'verbose': True
              }
 
-route, distance = ACO.ant_colony_optimization(distance_matrix, **parameters)
-print(route, distance)
-# FPA.flower_pollination_algorithm(flowers = 25, min_values = [-5,-5], max_values = [5,5], iterations = 500, gama = 0.1, lamb = 1.5, p = 0.8, target_function = ACO.ant_colony_optimization(distance_matrix, **parameters))
+print(f'Hiện tại có tổng cộng {len(distance_matrix)} trong tour du lịch.')
+print(f'Vui lòng nhập thành phố bạn muốn bắt đầu(Từ 1 đến {len(distance_matrix)}).')
+initial = int(input("Nhập thành phố bạn muốn bắt đầu: "))
+
+# Bắt đầu đo thời gian
+start_time = time.time()
+
+# Chạy đoạn code 
+route, distance = ACO.ant_colony_optimization(initial, distance_matrix, **parameters)
+print(f'Tour du lịch: {route}, Tổng khoảng cách: {distance}')
+
+# Kết thúc đo thời gian
+end_time = time.time()
+
+# Tính thời gian chạy
+running_time = end_time - start_time
+
+
+print(f'Thời gian chạy: {running_time:.2f} giây')

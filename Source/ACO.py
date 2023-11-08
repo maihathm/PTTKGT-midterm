@@ -143,7 +143,7 @@ def update_thau(distance_matrix, thau, city_list=[]):
 
 
 # Function: Ants City List
-def ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_search):
+def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, local_search):
     """
     Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO).
 
@@ -170,7 +170,8 @@ def ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_sear
     # Lặp qua tất cả các con kiến trong đàn
     for ant in range(0, ants):
         city_list = []
-        initial = random.randrange(1, len(distance_matrix))
+        # initial = random.randrange(1, len(distance_matrix)) 
+        # initial =  2
         city_list.append(initial)
         # Duyệt qua tất cả các thành phố còn lại
         for i in range(0, len(distance_matrix) - 1):
@@ -210,7 +211,7 @@ def ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_sear
 
 
 # ACO Function
-def ant_colony_optimization(distance_matrix, ants=5, iterations=50, alpha=1, beta=2, decay=0.05, local_search=True,
+def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=50, alpha=1, beta=2, decay=0.05, local_search=True,
                             verbose=True):
     """
     Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO)
@@ -242,7 +243,7 @@ def ant_colony_optimization(distance_matrix, ants=5, iterations=50, alpha=1, bet
         if (verbose == True and count > 0):
             print('Iteration = ', count, 'Distance = ', round(best_route[1], 2))
             # print(best_route)     
-        city_list, path_distance, thau = ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_search)
+        city_list, path_distance, thau = ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, local_search)
         thau = functions.matrix_multiply(thau, 1 - decay)
         if (distance > path_distance):
             best_route = copy.deepcopy([city_list])
