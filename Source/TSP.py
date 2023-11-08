@@ -1,4 +1,4 @@
-import FPA
+# import FPA
 import distance_matrix
 import ACO
 import os
@@ -43,5 +43,5 @@ parameters = {
              }
 
 route, distance = ACO.ant_colony_optimization(distance_matrix, **parameters)
-
+print(route, distance)
 # FPA.flower_pollination_algorithm(flowers = 25, min_values = [-5,-5], max_values = [5,5], iterations = 500, gama = 0.1, lamb = 1.5, p = 0.8, target_function = ACO.ant_colony_optimization(distance_matrix, **parameters))

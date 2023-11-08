@@ -35,7 +35,7 @@ def city_probability(h, thau, city=0, alpha=1, beta=2, city_list=[]):
     Tính toán xác suất tham quan của mỗi thành phố trong một chuyến du lịch dựa trên ma trận pheromone, ma trận heuristic và thành phố hiện tại.
 
     Args:
-        h: Ma trận heuristic của các thành phố.
+        h: Ma trận heuristic(ma trận hấp dẫn) của các thành phố.
         thau: Ma trận pheromone của các thành phố.
         city: Thành phố hiện tại.
         alpha: Hệ số alpha.
@@ -144,48 +144,101 @@ def update_thau(distance_matrix, thau, city_list=[]):
 
 # Function: Ants City List
 def ants_path(distance_matrix, h, thau, alpha, beta, full_list, ants, local_search):
+    """
+    Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO).
+
+    Args:
+        distance_matrix: Ma trận khoảng cách giữa các thành phố.
+        h: Ma trận heuristic của các thành phố.
+        thau: Ma trận pheromone của các thành phố.
+        alpha: Hệ số alpha.
+        beta: Hệ số beta.
+        full_list: Danh sách đầy đủ các thành phố.
+        ants: Số lượng ong.
+        local_search: Có thực hiện tìm kiếm cục bộ hay không.
+
+    Returns:
+        best_city_list: Đường đi tốt nhất được tìm thấy bởi thuật toán.
+        best_path_distance: Khoảng cách của đường đi tốt nhất được tìm thấy bởi thuật toán.
+        thau: Ma trận pheromone được cập nhật.
+
+    """
+    # Biến chứa tổng khoảng cách giữa các thành phố
     distance = functions.sum_list(distance_matrix)
     best_city_list = []
     best_path_distance = []
+    # Lặp qua tất cả các con kiến trong đàn
     for ant in range(0, ants):
         city_list = []
         initial = random.randrange(1, len(distance_matrix))
         city_list.append(initial)
+        # Duyệt qua tất cả các thành phố còn lại
         for i in range(0, len(distance_matrix) - 1):
+            # Tính xác xuất tham qua của mỗi thành phố
             probability = city_probability(h, thau, city=i, alpha=alpha, beta=beta, city_list=city_list)
+            # Chọn thành phố tiếp theo
             path_point = city_selection(probability, city_list=city_list)
+            # Nếu thành phố tiếp theo đã được tham quan
             if (path_point == 0):
+                # Chọn thành phố ngẫu nhiên trong các thành phố chưa được tham quan
                 path_point = [value for value in full_list if value not in city_list][0]
+            # Thêm thành phố tiếp theo vào
             city_list.append(path_point)
         city_list.append(city_list[0])
         path_distance = 0
+        # Duyệt qua các thành phố đã tham quan
         for i in range(0, len(city_list) - 1):
             j = i + 1
+            # Tính tổng khoảng cách kiến đã đi
             path_distance = path_distance + distance_matrix[(city_list[i]) - 1][(city_list[j]) - 1]
+        # So sánh đường đi của kiến với khoảng cách tốt nhất đã được tìm thấy
         if (distance > path_distance):
             best_city_list = copy.deepcopy(city_list)
             best_path_distance = path_distance
             distance = path_distance
     best_route = copy.deepcopy([best_city_list])
     best_route.append(best_path_distance)
+    # Sử dụng 2_opt để tiếp tục cải thiện đường đi
     if (local_search == True):
         best_city_list, best_path_distance = two_opt.local_search_2_opt(distance_matrix, city_tour=best_route,
                                                                         recursive_seeding=-1)
+    # Cập nhập lại ma trận pheromone 
     thau = update_thau(distance_matrix, thau, city_list=best_city_list)
 
+    # Trả về đường đi tốt nhất, khoảng cách của đường đi, ma trận pheromone
     return best_city_list, best_path_distance, thau
 
 
 # ACO Function
 def ant_colony_optimization(distance_matrix, ants=5, iterations=50, alpha=1, beta=2, decay=0.05, local_search=True,
                             verbose=True):
+    """
+    Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO)
+
+    Args:
+        distance_matrix: Ma trận khoảng cách giữa các thành phố
+        ants: Số lượng ong trong đàn. (mặc định: 5)
+        iterations: Số lần lặp để chạy thuật toán ACO. (mặc định: 50)
+        alpha: Hệ số alpha điều khiển tầm quan trọng của các dấu vết pheromone. (mặc định: 1)
+        beta: Hệ số beta điều khiển tầm quan trọng của thông tin heuristic. (mặc định: 2)
+        decay: Hệ số phân hủy pheromone. (mặc định: 0.05)
+        local_search: Có thực hiện tìm kiếm cục bộ để cải thiện đường đi tốt nhất hay không. (mặc định: True)
+        verbose: Có in thông tin tiến trình hay không. (mặc định: True)
+
+    Returns:
+        best_route: Đường đi ngắn nhất được tìm thấy bởi thuật toán ACO
+        best_path_distance: Khoảng cách của đường đi ngắn nhất được tìm thấy bởi thuật toán ACO
+
+    """
     count = 0
     best_route = []
     full_list = list(range(1, len(distance_matrix) + 1))
     distance = functions.sum_list(distance_matrix)
     h = attractiveness(distance_matrix)
     thau = functions.create_empty_matrix_ones(len(distance_matrix), len(distance_matrix))
+    # Duyệt qua từng vòng lặp
     while (count <= iterations):
+        # In ra thông tin tiến trình
         if (verbose == True and count > 0):
             print('Iteration = ', count, 'Distance = ', round(best_route[1], 2))
             # print(best_route)     
