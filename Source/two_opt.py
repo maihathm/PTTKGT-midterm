@@ -35,7 +35,7 @@ def local_search_2_opt(distance_matrix, city_tour, recursive_seeding=-1):
       tour du lịch được nữa.
 
   Returns:
-    Một tour du lịch được cải thiện, được biểu diễn bằng một danh sách các thành phố
+    Một tour du lịch được cải thiện, tổng khoảng cách tour du lịch được cải thiện. Được biểu diễn bằng một danh sách các thành phố
       theo thứ tự tham quan.
   """
     if (recursive_seeding < 0):
@@ -47,15 +47,20 @@ def local_search_2_opt(distance_matrix, city_tour, recursive_seeding=-1):
     while (count < recursive_seeding):
         best_route = copy.deepcopy(city_list)
         seed = copy.deepcopy(city_list)
+        # Duyệt qua tất cả các cặp đoạn đường trong tour du lịch
         for i in range(0, len(city_list[0]) - 2):
             for j in range(i + 1, len(city_list[0]) - 1):
+              # Hoán đổi hai đoạn đường đó và tính lại tổng khoảng cách của tour du lịch
                 best_route[0][i:j + 1] = list(reversed(best_route[0][i:j + 1]))
                 best_route[0][-1] = best_route[0][0]
                 best_route[1] = distance_calc(distance_matrix, best_route)
+                # Nếu tổng khoảng cách của tour du lịch sau khi hoán đổi nhỏ hơn tổng khoảng cách tour du lịch ban đầu
                 if (city_list[1] > best_route[1]):
+                    # Thực hiện hoán đổi
                     city_list = copy.deepcopy(best_route)
                 best_route = copy.deepcopy(seed)
         count = count + 1
+        # Tiếp tục xét số lần lặp
         if (distance > city_list[1] and recursive_seeding < 0):
             distance = city_list[1]
             count = -2

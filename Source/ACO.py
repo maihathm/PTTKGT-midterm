@@ -1,7 +1,6 @@
 import copy
 import os
 import random
-
 import functions
 import two_opt
 
@@ -10,7 +9,17 @@ random.seed(10)
 
 # Function: Initial Attractiveness
 def attractiveness(distance_matrix):
+    """Tính độ hấp dẫn của một ma trận khoảng cách.
+
+  Args:
+    distance_matrix: Ma trận khoảng cách giữa các điểm.
+
+  Returns:
+    Một ma trận mới, trong đó mỗi phần tử biểu diễn độ hấp dẫn của cạnh tương ứng trong ma trận khoảng cách đầu vào.
+  """
+    # Tạo một ma trận biểu diễn độ hấp dẫn của từng cạnh
     h = functions.create_empty_matrix(len(distance_matrix), len(distance_matrix))
+    # Duyệt qua tất cả các phần tử của ma trận khoảng cách
     for i in range(0, len(distance_matrix)):
         for j in range(0, len(distance_matrix[i])):
             if (i == j or distance_matrix[i][j] == 0):
@@ -22,13 +31,34 @@ def attractiveness(distance_matrix):
 
 # Function: Probability Matrix
 def city_probability(h, thau, city=0, alpha=1, beta=2, city_list=[]):
+    """
+    Tính toán xác suất tham quan của mỗi thành phố trong một chuyến du lịch dựa trên ma trận pheromone, ma trận heuristic và thành phố hiện tại.
+
+    Args:
+        h: Ma trận heuristic của các thành phố.
+        thau: Ma trận pheromone của các thành phố.
+        city: Thành phố hiện tại.
+        alpha: Hệ số alpha.
+        beta: Hệ số beta.
+        city_list: Danh sách các thành phố đã được tham qian
+    Returns:
+        Một ma trận mới, trong đó mỗi phần tử biểu diễn xác xuất tham quan của mỗi thành phố.
+    """
+    # Số lượng thành phố
     num_cities = len(h)
+    # Tạo ma trận để lưu trữ xác xuất tham quan của mỗi thành phố
     probability = [[0, 0, 0] for _ in range(num_cities)]
+    # Biến lưu trữ tổng độ hấp dẫn của tất cả các thành phố
     total_attraction = 0
+    # Duyệt qua từng thành phố
     for i in range(num_cities):
+        # Tính tổng độ hấp dẫn của các thành phố
         total_attraction = sum([probability[i][0] for i in range(0, len(probability))])
+        # Kiểm tra xem thành phố đã được tham qua hay chưa
         if i + 1 not in city_list:
+            # Tính độ hấp dẫn của thành phố bằng ma trận pheromone và ma trận hấp dẫn
             attraction = (thau[i][city] ** alpha) * (h[i][city] ** beta)
+            # Lưu độ hấp dẫn của thành phố trong ma trận xác xuất
             probability[i][0] = attraction
 
     for i in range(num_cities):
@@ -43,36 +73,72 @@ def city_probability(h, thau, city=0, alpha=1, beta=2, city_list=[]):
     if len(city_list) > 0:
         for i in range(len(city_list)):
             probability[city_list[i] - 1][2] = 0.0
-
+    # Trả về ma trận xác xuất
     return probability
 
 
 # Function: Select Next City
 def city_selection(probability_matrix, city_list=[]):
+    """
+    Lựa chọn một thành phố để tham quan tiếp theo dựa trên ma trận xác suất và danh sách các thành phố đã được tham quan.
+
+    Args:
+        probability_matrix: Ma trận xác suất của các thành phố.
+        city_list: Danh sách các thành phố đã được tham quan.
+
+    Returns:
+        Thành phố được lựa chọn để tham quan tiếp theo.
+
+    """
+    # Tạo ngẫu nhiên 1 số giữa 0 và 1
     random = int.from_bytes(os.urandom(8), byteorder='big') / ((1 << 64) - 1)
+    # Biến lưu trữ thành phố được chọn tiếp theo
     city = 0
+    # Duyệt qua các hàng của ma trận xác xuất
     for i in range(0, len(probability_matrix)):
+        # Nếu số cho ngẫu nhiên bằng hoặc nhỏ hơn xác xuất tích lũy của của thành phố và thành phố chưa được tham quan trả về thành phố đó
         if (random <= probability_matrix[i][2] and i + 1 not in city_list):
             city = i + 1
             break
+    # Trả về thành phố được chọn
     return city
 
 
 # Function: Update Thau
 def update_thau(distance_matrix, thau, city_list=[]):
+    """
+    Cập nhật ma trận pheromone sau khi hoàn thành một chuyến tham quan.
+
+    Args:
+        distance_matrix: Ma trận khoảng cách giữa các thành phố.
+        thau: Ma trận pheromone của các thành phố.
+        city_list: Danh sách các thành phố trong chuyến tham quan.
+
+    Returns:
+        Ma trận pheromone đã được cập nhật.
+
+    """
+    # Biến lưu trữ tổng khoảng cách của chuyến tham quan
     distance = 0
+    # Tạo bản sao danh sách các thành phố trong chuyến tham quan
     city_tour = copy.deepcopy(city_list)
+    # Thêm thành phố ngẫu nhiên vào đầu và cuối danh sách chuyến tham quan
+    # Để đảm bảo luôn có 1 cạnh bất kỳ giữa 2 thành phố
     random_number = 0
     city_tour = random_number, *city_tour, random_number
+    # Duyệt qua các cạnh và tính tổng khoảng cách chuyến tham quan
     for i in range(0, len(city_list) - 1):
         j = i + 1
         distance = distance + distance_matrix[city_tour.index(city_list[i]) - 1][city_tour.index(city_list[j]) - 1]
+    # Tạo biến pheromone 
     pheromone = 1
+    # Duyệt qua các cạnh trong chuyến tham qua và cập nhật pheeromone
     for i in range(0, len(city_list) - 1):
         j = i + 1
         m = city_tour.index(city_list[i]) - 1
         n = city_tour.index(city_list[j]) - 1
         thau[m][n] = thau[m][n] + pheromone
+    # Trả về ma trận pheromone đã được cập nhật
     return thau
 
 
