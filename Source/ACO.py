@@ -148,6 +148,7 @@ def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, l
     Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO).
 
     Args:
+        initial: Vị trí bắt đầu
         distance_matrix: Ma trận khoảng cách giữa các thành phố.
         h: Ma trận heuristic của các thành phố.
         thau: Ma trận pheromone của các thành phố.
@@ -217,6 +218,7 @@ def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=50, alp
     Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO)
 
     Args:
+        initial: Vị trí bắt đầu
         distance_matrix: Ma trận khoảng cách giữa các thành phố
         ants: Số lượng ong trong đàn. (mặc định: 5)
         iterations: Số lần lặp để chạy thuật toán ACO. (mặc định: 50)

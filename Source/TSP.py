@@ -31,8 +31,10 @@ if os.path.exists(file_path):
 else:
     print(f'Tệp {file_path} không tồn tại.')
 
+# Tạo ma trận khoảng cách
 distance_matrix = distance_matrix.build_distance_matrix(data)
 
+# Para cho ACO
 parameters = {
               'ants': 10,
               'iterations': 50,
@@ -59,6 +61,5 @@ end_time = time.time()
 
 # Tính thời gian chạy
 running_time = end_time - start_time
-
 
 print(f'Thời gian chạy: {running_time:.2f} giây')
