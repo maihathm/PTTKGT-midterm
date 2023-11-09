@@ -45,10 +45,11 @@ parameters = {
               'verbose': True
              }
 
-print(f'Hiện tại có tổng cộng {len(distance_matrix)} trong tour du lịch.')
+print(f'Hiện tại có tổng cộng {len(distance_matrix)} thành phố trong tour du lịch.')
 print(f'Vui lòng nhập thành phố bạn muốn bắt đầu(Từ 1 đến {len(distance_matrix)}).')
 initial = int(input("Nhập thành phố bạn muốn bắt đầu: "))
-
+print('---------------------------------------------------------')
+print('Đang khởi tạo đường đi.........')
 # Bắt đầu đo thời gian
 start_time = time.time()
 
