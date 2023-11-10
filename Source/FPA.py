@@ -1,43 +1,14 @@
 import math
 import random
 
-
-def fitness_function(alpha=1, beta=2, decay=0.05, Best_Known_Solution=None, distance_matrix=None, route=[],
-                     attractiveness_matrix=None):
-    """
-    Calculate the fitness value for a given route in the FPA algorithm.
-
-    Args:
-        alpha (float): Alpha parameter for balancing pheromone and heuristic information.
-        beta (float): Beta parameter for balancing pheromone and heuristic information.
-        decay (float): Decay rate for pheromone evaporation.
-        Best_Known_Solution (float): The best known solution value if available.
-        distance_matrix (list of lists): Matrix of distances between cities.
-        route (list): A list representing the sequence of cities to visit.
-        attractiveness_matrix (list of lists): Matrix of attractiveness values.
-
-    Returns:
-        The fitness value of the route.
-    """
-    total_distance = 0
-
-    for i in range(len(route) - 1):
-        from_city = route[i] - 1  # Adjust to 0-based index
-        to_city = route[i + 1] - 1  # Adjust to 0-based index
-        total_distance += distance_matrix[from_city][to_city] * (
-                alpha * attractiveness_matrix[from_city][to_city] + beta)
-
-    # Calculate the fitness value based on the total distance
-    fitness_value = total_distance
-
-    if Best_Known_Solution is not None:
-        # Adjust the fitness value based on the best known solution (if available)
-        fitness_value = (1 - decay) * fitness_value + (decay * Best_Known_Solution)
-
-    return fitness_value
+import ACO
 
 
-def init_population(N=None, min_val=None, max_val=None, function=fitness_function):
+def fitness_function():
+    pass
+
+
+def init_population(N=None, min_val=None, max_val=None, function=fitness_function, initial=1, distance_matrix=None):
     """
     Init population cho tập N bông hoa:
     :param N: là số lượng bông hoa
@@ -50,9 +21,9 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
     if N is None:
         N = 3
     if max_val is None:
-        max_val = [5, 5]
+        max_val = [5, 5, 5]
     if min_val is None:
-        min_val = [0, 0]
+        min_val = [0.001, 0.001, 0.001]
 
     position = []
     for i in range(0, N):
@@ -63,13 +34,12 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
         position.append(temp)
     for i in range(0, N):
         val = position[i][0: len(position[i])]
-        temp = function()
-        position[i].append(temp)
+        alpha, beta, decay = val
+        print(type(alpha),type(beta),type(decay))
+        route, distance = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
+        position[i].append(distance)
     return position
 
-
-test_init_population = init_population(N=3, min_val=[0, 0], max_val=[5, 5], function=fitness_function)
-print("----",test_init_population)
 
 # # TODO: Check init_population
 # test_init_population = init_population(N=3, min_val=[0, 0, max_val=[5, 5], function=fitness_function)
@@ -101,7 +71,8 @@ def levy_flight(beta=None):
 
 
 # pollination global
-def pollination_global(population: [], best_global: [], flower, gamma, lamb, min_value, max_value, function):
+def pollination_global(population: [], best_global: [], flower, gamma, lamb, min_value, max_value, function, initial,
+                       distance_matrix):
     """
     Thực hiện thụ phấn chéo
 
@@ -125,29 +96,15 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
         if value > max_value[j]:
             value = max_value[j]
         x[j] = value
-    x[-1] = function(x[0:len(min_value)])
+    alpha, beta, decay = x[0:len(min_value)]
+    print(type(alpha),type(beta),type(decay))
+    route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
     return x
-
-
-# --------------------------
-
-# # test pollination_global
-# pg = pollination_global(
-#     population=test_init_population,
-#     function=six_hump_camel_back,
-#     best_global=[1, 4, 5],
-#     flower=0,
-#     max_value=[5, 5],
-#     min_value=[0, 0,
-#     gamma=0.5,
-#     lamb=1.4
-# )
-# print("Global pollination:", pg)  # Oke
 
 
 # pollination local
 def pollination_local(population: [], best_global: [], flower, nb_flower1=None, nb_flower2=None, min_value=None,
-                      max_value=None, function=None):
+                      max_value=None, function=None, initial=1, distance_matrix=None):
     """
 
     :param population: Danh sách khởi tạo các bông hoa
@@ -173,27 +130,15 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
         if val > max_value[j]:
             val = max_value[j]
         x[j] = val
-    x[-1] = function(x[0:len(min_value)])
+    alpha, beta, decay = x[0:len(min_value)]
+    print(type(alpha),type(beta),type(decay))
+    route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
     return x
-
-
-
-pl = pollination_local(
-    population=test_init_population,
-    best_global=[1, 4, 5],
-    flower=0,
-    nb_flower1=0,
-    nb_flower2=1,
-    function=fitness_function,
-    min_value=[0, 0],
-    max_value=[5, 5],
-)
-print("Pollination locally:", pl)
 
 
 # Flower Pollination Algorithms
 def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, iteration=50, gamma=0.5, lamb=1.4,
-                                  p=0.8, function=fitness_function):
+                                  p=0.8, initial=1, distance_matrix=None, function=None):
     """
     :param flowers: Bắt đầu từ bông hoa
     :param min_values: Các giá trị min có thể nhận
@@ -205,13 +150,13 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
     :param function: Hàm thích nghi
     :return: Đường đi tốt nhất sử dụng thuật toán FPA.
     """
-
     if max_values is None:
-        max_values = [5, 5]
+        max_values = [5, 5, 5]
     if min_values is None:
-        min_values = [0, 0]
+        min_values = [0, 0, 0]
     count = 0
-    position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values)
+    position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values, initial=initial
+                               , distance_matrix=distance_matrix)
     best_global = sorted(position, key=lambda x: x[-1])[0]
     x = best_global.copy()
     for loop in range(iteration + 1):
@@ -232,7 +177,9 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
                     lamb=lamb,
                     min_value=min_values,
                     max_value=max_values,
-                    function=function
+                    function=function,
+                    initial=initial,
+                    distance_matrix=distance_matrix
                 )
             else:
                 x = pollination_local(
@@ -243,7 +190,9 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
                     min_value=min_values,
                     nb_flower2=nb_flower_2,
                     nb_flower1=nb_flower_1,
-                    best_global=best_global
+                    best_global=best_global,
+                    initial=initial,
+                    distance_matrix=distance_matrix
                 )
             if x[-1] <= position[i][-1]:
                 for j in range(0, len(position[0])):

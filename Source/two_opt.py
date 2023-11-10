@@ -50,7 +50,7 @@ def local_search_2_opt(distance_matrix, city_tour, recursive_seeding=-1):
         # Duyệt qua tất cả các cặp đoạn đường trong tour du lịch
         for i in range(1, len(city_list[0]) - 2):
             for j in range(i + 1, len(city_list[0]) - 1):
-              # Hoán đổi hai đoạn đường đó và tính lại tổng khoảng cách của tour du lịch
+                # Hoán đổi hai đoạn đường đó và tính lại tổng khoảng cách của tour du lịch
                 best_route[0][i:j + 1] = list(reversed(best_route[0][i:j + 1]))
                 best_route[0][-1] = best_route[0][0]
                 best_route[1] = distance_calc(distance_matrix, best_route)

@@ -1,6 +1,7 @@
 import copy
 import os
 import random
+
 import functions
 import two_opt
 
@@ -97,7 +98,7 @@ def city_selection(probability_matrix, city_list=[]):
     # Duyệt qua các hàng của ma trận xác xuất
     for i in range(0, len(probability_matrix)):
         # Nếu số cho ngẫu nhiên bằng hoặc nhỏ hơn xác xuất tích lũy của của thành phố và thành phố chưa được tham quan trả về thành phố đó
-        if (random <= probability_matrix[i][2] and i + 1 not in city_list):
+        if (random <= probability_matrix[i][2].real and i + 1 not in city_list):
             city = i + 1
             break
     # Trả về thành phố được chọn
@@ -212,7 +213,8 @@ def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, l
 
 
 # ACO Function
-def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=50, alpha=1, beta=2, decay=0.05, local_search=True,
+def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=5, alpha=1, beta=2, decay=0.05,
+                            local_search=True,
                             verbose=True):
     """
     Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO)
@@ -245,7 +247,8 @@ def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=50, alp
         if (verbose == True and count > 0):
             print('Iteration = ', count, 'Distance = ', round(best_route[1], 2))
             # print(best_route)     
-        city_list, path_distance, thau = ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, local_search)
+        city_list, path_distance, thau = ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants,
+                                                   local_search)
         thau = functions.matrix_multiply(thau, 1 - decay)
         if (distance > path_distance):
             best_route = copy.deepcopy([city_list])
