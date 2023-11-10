@@ -6,7 +6,7 @@ def distance_calc(distance_matrix, city_tour):
     """Tính tổng khoảng cách của một tour du lịch.
 
   Args:
-    distance_matrix: Ma trận khoảng cách giữa các thành phố.
+    distance_matrix: Ma trận khoảng cách giữa các thành phố. [ ]
     city_tour: Một tour du lịch, được biểu diễn bằng một danh sách các thành phố
       theo thứ tự tham quan.
 

@@ -2,31 +2,49 @@ import math
 import random
 
 
-def fitness_function():
-    pass
+def fitness_function(alpha=1, beta=2, decay=0.05, Best_Known_Solution=None, distance_matrix=None, route=[],
+                     attractiveness_matrix=None):
+    """
+    Calculate the fitness value for a given route in the FPA algorithm.
+
+    Args:
+        alpha (float): Alpha parameter for balancing pheromone and heuristic information.
+        beta (float): Beta parameter for balancing pheromone and heuristic information.
+        decay (float): Decay rate for pheromone evaporation.
+        Best_Known_Solution (float): The best known solution value if available.
+        distance_matrix (list of lists): Matrix of distances between cities.
+        route (list): A list representing the sequence of cities to visit.
+        attractiveness_matrix (list of lists): Matrix of attractiveness values.
+
+    Returns:
+        The fitness value of the route.
+    """
+    total_distance = 0
+
+    for i in range(len(route) - 1):
+        from_city = route[i] - 1  # Adjust to 0-based index
+        to_city = route[i + 1] - 1  # Adjust to 0-based index
+        total_distance += distance_matrix[from_city][to_city] * (
+                alpha * attractiveness_matrix[from_city][to_city] + beta)
+
+    # Calculate the fitness value based on the total distance
+    fitness_value = total_distance
+
+    if Best_Known_Solution is not None:
+        # Adjust the fitness value based on the best known solution (if available)
+        fitness_value = (1 - decay) * fitness_value + (decay * Best_Known_Solution)
+
+    return fitness_value
 
 
-def six_hump_camel_back(variables_value=None):
-    if variables_value is None:
-        variables_value = [0, 0]
-    return 4 * variables_value[0] ** 2 - 2.1 * variables_value[0] ** 4 + (1 / 3) * variables_value[0] ** 6 + \
-        variables_value[0] * variables_value[1] - 4 * variables_value[1] ** 2 + 4 * variables_value[1] ** 4
-
-
-# TODO: Test six_hump_camel_back
-# Test six_hump_camel_back
-a = six_hump_camel_back(variables_value=[0.0898, -0.7126])
-print("Six Hump Camel Back: ", a)  # Oke
-
-
-def init_population(N=None, min_val=None, max_val=None, function=fitness_function()):
+def init_population(N=None, min_val=None, max_val=None, function=fitness_function):
     """
     Init population cho tập N bông hoa:
     :param N: là số lượng bông hoa
     :param min_val: là giá trị tối thiểu cu các biến đến từ list có thể có.
     :param max_val: là giá trị tối đa của các biến đến từ list có thể có.
-    :param function:
-    :return:
+    :param function: Hàm fitness
+    :return: Population cho N bông hoa.
         ...
     """
     if N is None:
@@ -34,46 +52,36 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
     if max_val is None:
         max_val = [5, 5]
     if min_val is None:
-        min_val = [-5, -5]
+        min_val = [0, 0]
 
     position = []
-    # temp = []
     for i in range(0, N):
         temp = []
         for j in range(0, len(min_val)):
-            # print("j: ", j)
             random_val = random.uniform(min_val[j], max_val[j])
-            # print("random_val: ", random_val)
-            temp.append(
-                random_val
-            )
-        # print("Temp: ", temp)
+            temp.append(random_val)
         position.append(temp)
-    # print("Position: ", position)
     for i in range(0, N):
         val = position[i][0: len(position[i])]
-        # print("val: ",val)
-        temp = function(
-            val
-        )
-        # print("Temp: ",temp)
-        position[i].append(
-            temp
-        )
+        temp = function()
+        position[i].append(temp)
     return position
 
 
-# TODO: Check init_population
-test_init_population = init_population(N=3, min_val=[-5, -5], max_val=[5, 5], function=six_hump_camel_back)
-print("Test init population: ", test_init_population)
+test_init_population = init_population(N=3, min_val=[0, 0], max_val=[5, 5], function=fitness_function)
+print("----",test_init_population)
+
+# # TODO: Check init_population
+# test_init_population = init_population(N=3, min_val=[0, 0, max_val=[5, 5], function=fitness_function)
+# print("Test init population: ", test_init_population)
 
 
 # Lévy flight
 def levy_flight(beta=None):
     """
     # Tạo ra step-size parameter bằng lévy flight
-    :param beta:
-    :return: levy
+    :param beta: Giá trị beta trong công thức
+    :return: levy: Giá trị của Levy-flight
     """
 
     if beta is None:
@@ -87,9 +95,9 @@ def levy_flight(beta=None):
     return levy
 
 
-# test Lévy flight
-levy_ = levy_flight(beta=1.5)
-print("Levy flight: ", levy_)  # 0.005528715490671566 -> Oke
+# # test Lévy flight
+# levy_ = levy_flight(beta=1.5)
+# print("Levy flight: ", levy_)  # 0.005528715490671566 -> Oke
 
 
 # pollination global
@@ -97,33 +105,27 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
     """
     Thực hiện thụ phấn chéo
 
-    :param  population:
-    :param best_global:
-    :param flower:
-    :param gamma:
-    :param lamb:
-    :param min_value:
-    :param max_value:
-    :param function:
+    :param  population: Là danh sách khởi tạo các bông hoa.
+    :param best_global: Là đường đi tốt nhất trong lần chạy.
+    :param flower: Vị trí bông hoa
+    :param gamma: Giá trị của gamma trong công thức
+    :param lamb: Giá trị Lamda trong công thức
+    :param min_value: Các giá trị tối thiểu có thể nhận của Min_value
+    :param max_value: Các gía trị tối đa có thể nhận của Max_value
+    :param function: Hàm thích nghi.
 
-    :return:
+    :return: Một đường đi thực hiện polination global.
     """
 
     x = best_global.copy()
-    # print("x: ", x)
     for j in range(0, len(min_value)):
         value = population[flower][j] + gamma * levy_flight(lamb) * (population[flower][j] - best_global[j])
-        # print(value)
         if value < min_value[j]:
             value = min_value[j]
         if value > max_value[j]:
             value = max_value[j]
-
         x[j] = value
-    # print("x prev", x)
     x[-1] = function(x[0:len(min_value)])
-    # print("x aft", x)
-    # print("x Polonation Global", x)
     return x
 
 
@@ -136,7 +138,7 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
 #     best_global=[1, 4, 5],
 #     flower=0,
 #     max_value=[5, 5],
-#     min_value=[-5, -5],
+#     min_value=[0, 0,
 #     gamma=0.5,
 #     lamb=1.4
 # )
@@ -145,8 +147,19 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
 
 # pollination local
 def pollination_local(population: [], best_global: [], flower, nb_flower1=None, nb_flower2=None, min_value=None,
-                      max_value=None, function=fitness_function()):
-    # print(f"nb_flower1 {nb_flower1}, nb_flower2 {nb_flower2}")
+                      max_value=None, function=None):
+    """
+
+    :param population: Danh sách khởi tạo các bông hoa
+    :param best_global: Đường đi tốt nhất trong lần lặp trước
+    :param flower: Bông hoa bắt đầu.
+    :param nb_flower1: 
+    :param nb_flower2: 
+    :param min_value: Các giá trị thiểu có thể nhận
+    :param max_value: Các gí trị tối đa có thể nhận
+    :param function: Hàm thích nghi
+    :return: Trả về đường đi thực hiện local polination
+    """
     if nb_flower1 is None:
         nb_flower1 = 0
     if nb_flower2 is None:
@@ -155,17 +168,14 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
     for j in range(0, len(min_value)):
         r = random.uniform(0, 1)
         val = population[flower][j] + r * (population[nb_flower1][j] - population[nb_flower2][j])
-        # print(val)
         if val < min_value[j]:
             val = min_value[j]
         if val > max_value[j]:
             val = max_value[j]
         x[j] = val
-    # print("x prev", x)
     x[-1] = function(x[0:len(min_value)])
-    # print("x aft", x)
-    # print("x Pollination Local", x)
     return x
+
 
 
 pl = pollination_local(
@@ -174,8 +184,8 @@ pl = pollination_local(
     flower=0,
     nb_flower1=0,
     nb_flower2=1,
-    function=six_hump_camel_back,
-    min_value=[-5, -5],
+    function=fitness_function,
+    min_value=[0, 0],
     max_value=[5, 5],
 )
 print("Pollination locally:", pl)
@@ -183,32 +193,29 @@ print("Pollination locally:", pl)
 
 # Flower Pollination Algorithms
 def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, iteration=50, gamma=0.5, lamb=1.4,
-                                  p=0.8, function=six_hump_camel_back):
+                                  p=0.8, function=fitness_function):
     """
-
-    :param flowers:
-    :param min_values:
-    :param max_values:
-    :param iteration:
-    :param gamma:
-    :param lamb:
-    :param p:
-    :param function:
-    :return:
+    :param flowers: Bắt đầu từ bông hoa
+    :param min_values: Các giá trị min có thể nhận
+    :param max_values: Các giá trị max có thể nhận
+    :param iteration: Số vòng lặp
+    :param gamma: Giá trị của biến Gamma
+    :param lamb: Giá trị của biến Lambda
+    :param p: Xác suất chuyển đổi giữa Local Pollination vs Global Pollination
+    :param function: Hàm thích nghi
+    :return: Đường đi tốt nhất sử dụng thuật toán FPA.
     """
 
     if max_values is None:
         max_values = [5, 5]
     if min_values is None:
-        min_values = [-5, -5]
+        min_values = [0, 0]
     count = 0
     position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values)
     best_global = sorted(position, key=lambda x: x[-1])[0]
-    # print("##best_global:", best_global)
     x = best_global.copy()
     for loop in range(iteration + 1):
         print(f"Vòng lặp thứ {loop}, f(x) = {best_global}")
-        # print("x: ", x)
         for i in range(0, len(position)):
             nb_flower_1 = random.randint(0, len(position) - 1)
             nb_flower_2 = random.randint(0, len(position) - 1)
@@ -217,7 +224,6 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
             r = random.uniform(0, 1)
 
             if r < p:
-                # print("Global")
                 x = pollination_global(
                     population=position,
                     best_global=best_global,
@@ -229,8 +235,6 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
                     function=function
                 )
             else:
-                # print("Local")
-                # print("@@: ",best_global)
                 x = pollination_local(
                     population=position,
                     flower=i,
@@ -241,22 +245,10 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
                     nb_flower1=nb_flower_1,
                     best_global=best_global
                 )
-            # print("----------------")
-            # print("x: ", x)
-            # print("position[i][-1]", position[i][-1])
-            # print(len(position[0]))
             if x[-1] <= position[i][-1]:
-                # print("Changed")
                 for j in range(0, len(position[0])):
                     position[i][j] = x[j]
             val = sorted(position, key=lambda x: x[-1])[0]
-            # print("Val: ", val)
             if best_global[-1] > val[-1]:
                 best_global = val
-    # print("BEST GLOBAL: ", best_global)
     return best_global
-
-
-fpa = flower_pollination_algorithms(flowers=5, min_values=[-5, -5], max_values=[5, 5], iteration=100, gamma=0.1,
-                                    lamb=1.5, p=0.8, function=six_hump_camel_back)
-print("fpa:", fpa)
