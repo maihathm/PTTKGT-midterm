@@ -33,6 +33,7 @@ else:
 
 # Tạo ma trận khoảng cách
 distance_matrix = distance_matrix.build_distance_matrix(data)
+distance_matrix = functions.replace_values_zero(distance_matrix)
 distance_matrix = functions.replace_list(distance_matrix)
 # Para cho ACO
 parameters = {

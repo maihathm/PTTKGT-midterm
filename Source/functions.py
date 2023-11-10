@@ -70,18 +70,14 @@ def replace_list(list): # Đầu vào là một list các phần tử
             list[i][j] = 999999999999.0
   return list
 
-# Đang test
-import random
+def replace_values_zero(list):
+  probability = 0.1
+  for i in range(len(list)):
+      for j in range(len(list[0])):
+          random_number = random.random()
+          if random_number < probability:
+              list[i][j] = 0.0
+              list[j][i] = 0.0
+  return list
 
-list = [[5,4,3,5],[4,0,6,4],[3,6,0,7],[5,4,10,0]]
 
-number_of_elements = len(list) * len(list[0])
-number_of_zeros = int(number_of_elements * 0.1)
-
-for i in range(number_of_zeros):
-    random_number = random.random()
-    if random_number < 0.1:
-        random_index = random.choice(range(number_of_elements))
-        list[random_index // len(list[0])][random_index % len(list[0])] = 0
-
-print(list)
