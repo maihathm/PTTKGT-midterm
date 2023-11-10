@@ -3,7 +3,7 @@ import distance_matrix
 import ACO
 import os
 import time
-
+import functions
 # Đường dẫn đến tệp chứa dữ liệu
 # file_path = 'TSP-02-Coordinates.txt'
 # file_path = 'TSP-01.txt'
@@ -33,11 +33,11 @@ else:
 
 # Tạo ma trận khoảng cách
 distance_matrix = distance_matrix.build_distance_matrix(data)
-
+distance_matrix = functions.replace_list(distance_matrix)
 # Para cho ACO
 parameters = {
               'ants': 10,
-              'iterations': 50,
+              'iterations': 10,
               'alpha':1,
               'beta':2,
               'decay':0.05,
