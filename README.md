@@ -13,8 +13,8 @@
 ## Todo list:
 
 - [x] Choose papper
-- [ ] Format
-- [ ] Define the problem
+- [x] Format
+- [x] Define the problem
 - [ ] Implement
 - [ ] Measure the running time for benchmark
 - [ ] Question-Answering Session
