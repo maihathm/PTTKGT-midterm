@@ -98,7 +98,8 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
             value = max_value[j]
         x[j] = value
     alpha, beta, decay = x[0:len(min_value)]
-    print(type(alpha),type(beta),type(decay))
+    # print(type(alpha),type(beta),type(decay))
+    print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
     route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
     return x
 

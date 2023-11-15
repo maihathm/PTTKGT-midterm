@@ -213,7 +213,7 @@ def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, l
 
 
 # ACO Function
-def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=5, alpha=1, beta=2, decay=0.05,
+def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=15, alpha=1, beta=2, decay=0.05,
                             local_search=True,
                             verbose=True):
     """
