@@ -35,7 +35,8 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
     for i in range(0, N):
         val = position[i][0: len(position[i])]
         alpha, beta, decay = val
-        print(type(alpha),type(beta),type(decay))
+        # print(type(alpha),type(beta),type(decay))
+        print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
         route, distance = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
         position[i].append(distance)
     return position

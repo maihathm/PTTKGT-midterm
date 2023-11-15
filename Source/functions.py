@@ -65,6 +65,7 @@ def matrix_multiply(matrix, scalar):
         new_row = [element * scalar for element in row]
         result.append(new_row)
     return result
+    
 def replace_list(list): # Đầu vào là một list các phần tử
   for i in range(len(list)):
     for j in range(len(list[i])):
