@@ -1,16 +1,16 @@
 import math
 import random
 
-import ACO
-
 
 def fitness_function():
     pass
 
 
-def init_population(N=None, min_val=None, max_val=None, function=fitness_function, initial=1, distance_matrix=None):
+def init_population(N=None, min_val=None, max_val=None, function=None, initial=1, distance_matrix=None):
     """
     Init population cho tập N bông hoa:
+    :param distance_matrix:
+    :param initial:
     :param N: là số lượng bông hoa
     :param min_val: là giá trị tối thiểu cu các biến đến từ list có thể có.
     :param max_val: là giá trị tối đa của các biến đến từ list có thể có.
@@ -37,7 +37,14 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
         alpha, beta, decay = val
         # print(type(alpha),type(beta),type(decay))
         print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
-        route, distance = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay), local_search=False)
+        route, distance = function(
+            initial=initial,
+            distance_matrix=distance_matrix,
+            alpha=float(alpha),
+            beta=float(beta),
+            decay=float(decay),
+            local_search=False
+        )
         position[i].append(distance)
     return position
 
@@ -103,7 +110,14 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
     alpha, beta, decay = x[0:len(min_value)]
     # print(type(alpha),type(beta),type(decay))
     # print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
-    route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay), local_search=False)
+    route, x[-1] = function(
+        initial=initial,
+        distance_matrix=distance_matrix,
+        alpha=float(alpha),
+        beta=float(beta),
+        decay=float(decay),
+        local_search=False,
+        current_best_distance=distance)
     return x
 
 
@@ -142,12 +156,14 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
         x[j] = val
     alpha, beta, decay = x[0:len(min_value)]
     # print(type(alpha),type(beta),type(decay))
-    route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay), local_search=False)
+    route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay),
+                            local_search=False, current_best_distance=distance)
     return x
 
 
 # Flower Pollination Algorithms
-def flower_pollination_algorithms(flowers=3,position=None, min_values=None, max_values=None, iteration=50, gamma=0.5, lamb=1.4,
+def flower_pollination_algorithms(flowers=3, position=None, min_values=None, max_values=None, iteration=50, gamma=0.5,
+                                  lamb=1.4,
                                   p=0.8, initial=1, distance_matrix=None, function=None, distance=None):
     """
     :param flowers: Bắt đầu từ bông hoa
@@ -174,7 +190,7 @@ def flower_pollination_algorithms(flowers=3,position=None, min_values=None, max_
     if position is None:
         print("Khởi tạo bông hoa")
         position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values, initial=initial
-                                , distance_matrix=distance_matrix)
+                                   , distance_matrix=distance_matrix)
     else:
         print("Đã khởi tạo bông hoa")
     best_global = sorted(position, key=lambda x: x[-1])[0]
@@ -201,7 +217,7 @@ def flower_pollination_algorithms(flowers=3,position=None, min_values=None, max_
                     function=function,
                     initial=initial,
                     distance_matrix=distance_matrix,
-                    distance=distance # Khoảng cách tốt nhất hiện tại
+                    # distance=distance  # Khoảng cách tốt nhất hiện tại
                 )
             else:
                 print("Local Pollination")
@@ -216,13 +232,13 @@ def flower_pollination_algorithms(flowers=3,position=None, min_values=None, max_
                     best_global=best_global,
                     initial=initial,
                     distance_matrix=distance_matrix,
-                    distance=distance # Khoảng cách tốt nhất hiện tại
+                    # distance=distance  # Khoảng cách tốt nhất hiện tại
                 )
             if x[-1] <= position[i][-1]:
                 for j in range(0, len(position[0])):
                     position[i][j] = x[j]
             val = sorted(position, key=lambda x: x[-1])[0]
             if best_global[-1] > val[-1]:
-                print("Update best global")
+                print("Updated best global")
                 best_global = val
     return best_global

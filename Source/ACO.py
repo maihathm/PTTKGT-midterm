@@ -268,6 +268,7 @@ def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=5, alph
         # Nếu current_best_distance được cung cấp thì sử dụng nó
         if current_best_distance is not None:
             if (path_distance > current_best_distance):
+                print(f"Không tốt hơn")
                 return [], current_best_distance
             else:
                 print(f"FPA tốt nhất hiện tại: {path_distance} so với FPA tốt nhất trước đó: {current_best_distance}")
