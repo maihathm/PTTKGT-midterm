@@ -37,7 +37,7 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
         alpha, beta, decay = val
         # print(type(alpha),type(beta),type(decay))
         print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
-        route, distance = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
+        route, distance = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay), local_search=False)
         position[i].append(distance)
     return position
 
@@ -73,7 +73,7 @@ def levy_flight(beta=None):
 
 # pollination global
 def pollination_global(population: [], best_global: [], flower, gamma, lamb, min_value, max_value, function, initial,
-                       distance_matrix):
+                       distance_matrix, distance=None):
     """
     Thực hiện thụ phấn chéo
 
@@ -85,6 +85,9 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
     :param min_value: Các giá trị tối thiểu có thể nhận của Min_value
     :param max_value: Các gía trị tối đa có thể nhận của Max_value
     :param function: Hàm thích nghi.
+    :param initial: Thành phố bắt đầu
+    :param distance_matrix: Ma trận khoảng cách
+    :param distance: Khoảng cách tốt nhất hiện tại
 
     :return: Một đường đi thực hiện polination global.
     """
@@ -99,14 +102,14 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
         x[j] = value
     alpha, beta, decay = x[0:len(min_value)]
     # print(type(alpha),type(beta),type(decay))
-    print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
-    route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
+    # print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
+    route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay), local_search=False)
     return x
 
 
 # pollination local
 def pollination_local(population: [], best_global: [], flower, nb_flower1=None, nb_flower2=None, min_value=None,
-                      max_value=None, function=None, initial=1, distance_matrix=None):
+                      max_value=None, function=None, initial=1, distance_matrix=None, distance=None):
     """
 
     :param population: Danh sách khởi tạo các bông hoa
@@ -117,6 +120,11 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
     :param min_value: Các giá trị thiểu có thể nhận
     :param max_value: Các gí trị tối đa có thể nhận
     :param function: Hàm thích nghi
+    :param initial: Thành phố bắt đầu
+    :param distance_matrix: Ma trận khoảng cách
+    :param distance: Khoảng cách tốt nhất hiện tại
+
+
     :return: Trả về đường đi thực hiện local polination
     """
     if nb_flower1 is None:
@@ -133,14 +141,14 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
             val = max_value[j]
         x[j] = val
     alpha, beta, decay = x[0:len(min_value)]
-    print(type(alpha),type(beta),type(decay))
-    route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
+    # print(type(alpha),type(beta),type(decay))
+    route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay), local_search=False)
     return x
 
 
 # Flower Pollination Algorithms
-def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, iteration=50, gamma=0.5, lamb=1.4,
-                                  p=0.8, initial=1, distance_matrix=None, function=None):
+def flower_pollination_algorithms(flowers=3,position=None, min_values=None, max_values=None, iteration=50, gamma=0.5, lamb=1.4,
+                                  p=0.8, initial=1, distance_matrix=None, function=None, distance=None):
     """
     :param flowers: Bắt đầu từ bông hoa
     :param min_values: Các giá trị min có thể nhận
@@ -150,6 +158,12 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
     :param lamb: Giá trị của biến Lambda
     :param p: Xác suất chuyển đổi giữa Local Pollination vs Global Pollination
     :param function: Hàm thích nghi
+    :param distance_matrix: Ma trận khoảng cách
+    :param initial: Thành phố bắt đầu
+    :param distance: Khoảng cách tốt nhất hiện tại
+    :param position: Danh sách các bông hoa
+    
+
     :return: Đường đi tốt nhất sử dụng thuật toán FPA.
     """
     if max_values is None:
@@ -157,8 +171,12 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
     if min_values is None:
         min_values = [0, 0, 0]
     count = 0
-    position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values, initial=initial
-                               , distance_matrix=distance_matrix)
+    if position is None:
+        print("Khởi tạo bông hoa")
+        position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values, initial=initial
+                                , distance_matrix=distance_matrix)
+    else:
+        print("Đã khởi tạo bông hoa")
     best_global = sorted(position, key=lambda x: x[-1])[0]
     x = best_global.copy()
     for loop in range(iteration + 1):
@@ -171,6 +189,7 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
             r = random.uniform(0, 1)
 
             if r < p:
+                print("Global Pollination")
                 x = pollination_global(
                     population=position,
                     best_global=best_global,
@@ -181,9 +200,11 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
                     max_value=max_values,
                     function=function,
                     initial=initial,
-                    distance_matrix=distance_matrix
+                    distance_matrix=distance_matrix,
+                    distance=distance # Khoảng cách tốt nhất hiện tại
                 )
             else:
+                print("Local Pollination")
                 x = pollination_local(
                     population=position,
                     flower=i,
@@ -194,12 +215,14 @@ def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, i
                     nb_flower1=nb_flower_1,
                     best_global=best_global,
                     initial=initial,
-                    distance_matrix=distance_matrix
+                    distance_matrix=distance_matrix,
+                    distance=distance # Khoảng cách tốt nhất hiện tại
                 )
             if x[-1] <= position[i][-1]:
                 for j in range(0, len(position[0])):
                     position[i][j] = x[j]
             val = sorted(position, key=lambda x: x[-1])[0]
             if best_global[-1] > val[-1]:
+                print("Update best global")
                 best_global = val
     return best_global
