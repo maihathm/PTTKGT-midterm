@@ -10,7 +10,7 @@ file_path = 'TSP-02-Coordinates.txt'
 # file_path = 'TSP-02.txt'
 
 # Tạo ma trận khoảng cách
-distance_matrix = ReadDistanceMatrix.readDistanceMatrix("TSP-02.txt")
+distance_matrix = ReadDistanceMatrix.readDistanceMatrix(file_path)
 distance_matrix = functions.replace_values_zero(distance_matrix)
 distance_matrix = functions.replace_list(distance_matrix)
 print(f'Hiện tại có tổng cộng {len(distance_matrix)} thành phố trong tour du lịch.')

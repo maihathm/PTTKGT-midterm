@@ -10,13 +10,18 @@ def target_function():
 
 def init_population(N=None, min_val=None, max_val=None, function=target_function, initial=1, distance_matrix=None):
     """
-    Init population cho tập N bông hoa:
-    :param N: là số lượng bông hoa
-    :param min_val: là giá trị tối thiểu cu các biến đến từ list có thể có.
-    :param max_val: là giá trị tối đa của các biến đến từ list có thể có.
-    :param function: Hàm fitness
-    :return: Population cho N bông hoa.
-        ...
+    Khởi tạo quần thể cá thể ban đầu cho thuật toán tối ưu hóa dựa trên quần thể.
+
+    Args:
+        N: Số lượng cá thể trong quần thể (nếu không được cung cấp, giá trị mặc định là 3)
+        min_val: Danh sách các giá trị tối thiểu cho mỗi tham số cá thể (nếu không được cung cấp, giá trị mặc định là `[0.001, 0.001, 0.001]`)
+        max_val: Danh sách các giá trị tối đa cho mỗi tham số cá thể (nếu không được cung cấp, giá trị mặc định là `[5, 5, 5]`)
+        function: Hàm mục tiêu được sử dụng để đánh giá mỗi cá thể trong quần thể (nếu không được cung cấp, giá trị mặc định là hàm `target_function`)
+        initial: Giá trị ban đầu của tuyến đường (nếu không được cung cấp, giá trị mặc định là 1)
+        distance_matrix: Ma trận khoảng cách giữa các điểm trong tuyến đường (nếu không được cung cấp, giá trị mặc định là `None`)
+
+    Returns:
+        Danh sách các cá thể
     """
     if N is None:
         N = 3
@@ -43,11 +48,14 @@ def init_population(N=None, min_val=None, max_val=None, function=target_function
 # Lévy flight
 def levy_flight(beta=None):
     """
-    # Tạo ra step-size parameter bằng lévy flight
-    :param beta: Giá trị beta trong công thức
-    :return: levy: Giá trị của Levy-flight
-    """
+    Tạo ra một bước nhảy Lévy với tham số beta
 
+    Args:
+        beta: Tham số beta của phân bố Lévy-Stable (nếu không được cung cấp, giá trị mặc định là 1.5)
+
+    Returns:
+        Bước nhảy Lévy
+    """
     if beta is None:
         beta = 1.5
     r1 = random.uniform(0, 1)
@@ -62,20 +70,23 @@ def levy_flight(beta=None):
 def pollination_global(population: [], best_global: [], flower, gamma, lamb, min_value, max_value, function, initial,
                        distance_matrix):
     """
-    Thực hiện thụ phấn chéo
+    Thực hiện phép thụ phấn toàn cầu trong thuật toán FPA
 
-    :param  population: Là danh sách khởi tạo các bông hoa.
-    :param best_global: Là đường đi tốt nhất trong lần chạy.
-    :param flower: Vị trí bông hoa
-    :param gamma: Giá trị của gamma trong công thức
-    :param lamb: Giá trị Lamda trong công thức
-    :param min_value: Các giá trị tối thiểu có thể nhận của Min_value
-    :param max_value: Các gía trị tối đa có thể nhận của Max_value
-    :param function: Hàm thích nghi.
+    Args:
+        population: Danh sách các cá thể trong quần thể
+        best_global: Cá thể tốt nhất toàn cầu
+        flower: Cá thể đang được cập nhật
+        gamma: Tham số gamma của phép thụ phấn
+        lamb: Tham số lambda của phép bay Lévy
+        min_value: Danh sách các giá trị tối thiểu cho mỗi tham số cá thể
+        max_value: Danh sách các giá trị tối đa cho mỗi tham số cá thể
+        function: Hàm mục tiêu được sử dụng để đánh giá mỗi cá thể trong quần thể
+        initial: Giá trị ban đầu của tuyến đường
+        distance_matrix: Ma trận khoảng cách giữa các điểm trong tuyến đường
 
-    :return: Một đường đi thực hiện polination global.
+    Returns:
+        Cá thể được cập nhật sau khi thực hiện phép thụ phấn toàn cầu
     """
-
     x = best_global.copy()
     for j in range(0, len(min_value)):
         value = population[flower][j] + gamma * levy_flight(lamb) * (population[flower][j] - best_global[j])
@@ -94,16 +105,22 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
 def pollination_local(population: [], best_global: [], flower, nb_flower1=None, nb_flower2=None, min_value=None,
                       max_value=None, function=None, initial=1, distance_matrix=None):
     """
+    Thực hiện phép thụ phấn địa phương trong thuật toán FPA
 
-    :param population: Danh sách khởi tạo các bông hoa
-    :param best_global: Đường đi tốt nhất trong lần lặp trước
-    :param flower: Bông hoa bắt đầu.
-    :param nb_flower1: 
-    :param nb_flower2: 
-    :param min_value: Các giá trị thiểu có thể nhận
-    :param max_value: Các gí trị tối đa có thể nhận
-    :param function: Hàm thích nghi
-    :return: Trả về đường đi thực hiện local polination
+    Args:
+        population: Danh sách các cá thể trong quần thể
+        best_global: Cá thể tốt nhất toàn cầu
+        flower: Cá thể đang được cập nhật
+        nb_flower1: Chỉ số của cá thể thứ nhất được sử dụng trong phép thụ phấn (nếu không được cung cấp, giá trị mặc định là 0)
+        nb_flower2: Chỉ số của cá thể thứ hai được sử dụng trong phép thụ phấn (nếu không được cung cấp, giá trị mặc định là 1)
+        min_value: Danh sách các giá trị tối thiểu cho mỗi tham số cá thể
+        max_value: Danh sách các giá trị tối đa cho mỗi tham số cá thể
+        function: Hàm mục tiêu được sử dụng để đánh giá mỗi cá thể trong quần thể
+        initial: Giá trị ban đầu của tuyến đường
+        distance_matrix: Ma trận khoảng cách giữa các điểm trong tuyến đường
+
+    Returns:
+        Cá thể được cập nhật sau khi thực hiện phép thụ phấn địa phương
     """
     if nb_flower1 is None:
         nb_flower1 = 0
@@ -128,15 +145,22 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
 def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, iteration=50, gamma=0.5, lamb=1.4,
                                   p=0.8, initial=1, distance_matrix=None, function=None):
     """
-    :param flowers: Bắt đầu từ bông hoa
-    :param min_values: Các giá trị min có thể nhận
-    :param max_values: Các giá trị max có thể nhận
-    :param iteration: Số vòng lặp
-    :param gamma: Giá trị của biến Gamma
-    :param lamb: Giá trị của biến Lambda
-    :param p: Xác suất chuyển đổi giữa Local Pollination vs Global Pollination
-    :param function: Hàm thích nghi
-    :return: Đường đi tốt nhất sử dụng thuật toán FPA.
+    Tối ưu hóa dựa trên quần thể FPA
+
+    Args:
+        flowers: Số lượng cá thể trong quần thể (nếu không được cung cấp, giá trị mặc định là 3)
+        min_values: Danh sách các giá trị tối thiểu cho mỗi tham số cá thể (nếu không được cung cấp, giá trị mặc định là `[0, 0, 0]`)
+        max_values: Danh sách các giá trị tối đa cho mỗi tham số cá thể (nếu không được cung cấp, giá trị mặc định là `[5, 5, 5]`)
+        iteration: Số lượng lặp của thuật toán (nếu không được cung cấp, giá trị mặc định là 50)
+        gamma: Tham số gamma của phép thụ phấn toàn cầu (nếu không được cung cấp, giá trị mặc định là 0.5)
+        lamb: Tham số lambda của phép bay Lévy (nếu không được cung cấp, giá trị mặc định là 1.4)
+        p: Xác suất chọn phép thụ phấn toàn cầu (nếu không được cung cấp, giá trị mặc định là 0.8)
+        initial: Giá trị ban đầu của tuyến đường (nếu không được cung cấp, giá trị mặc định là 1)
+        distance_matrix: Ma trận khoảng cách giữa các điểm trong tuyến đường (nếu không được cung cấp, giá trị mặc định là `None`)
+        function: Hàm mục tiêu được sử dụng để đánh giá mỗi cá thể trong quần thể
+
+    Returns:
+        Cá thể tốt nhất toàn cầu
     """
     if max_values is None:
         max_values = [5, 5, 5]

@@ -213,7 +213,7 @@ def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, l
 
 
 # ACO Function
-def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=5, alpha=1, beta=2, decay=0.05,
+def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=30, alpha=1, beta=2, decay=0.05,
                             local_search=True,
                             verbose=True):
     """
@@ -246,7 +246,7 @@ def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=5, alph
         # In ra thông tin tiến trình
         if (verbose == True and count > 0):
             print('Iteration = ', count, 'Distance = ', round(best_route[1], 2))
-            # print(best_route)     
+            print(best_route)     
         city_list, path_distance, thau = ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants,
                                                    local_search)
         thau = functions.matrix_multiply(thau, 1 - decay)

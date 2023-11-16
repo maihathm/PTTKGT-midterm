@@ -1,6 +1,7 @@
 import random
 import os
 import functions
+import math
 # Function
 def target_function(x):
     return
@@ -43,10 +44,17 @@ def initial_velocity(position, min_values=None, max_values=None):
     return init_velocity
 
 # Function: Individual Best
-def individual_best_matrix(position, i_b_matrix):
-    for i in range(len(position)):
-        if i_b_matrix[i][-1] > position[i][-1]:
-            i_b_matrix[i] = position[i][:]
+# def individual_best_matrix(position, i_b_matrix):
+#     for i in range(len(position)):
+#         if i_b_matrix[i][-1] > position[i][-1]:
+#             i_b_matrix[i] = position[i][:]
+#     return i_b_matrix
+
+def individual_best_matrix(position, i_b_matrix): 
+    for i in range(0, len(position[0])):
+        if(i_b_matrix[i][-1] > position[i][-1]):
+            for j in range(0, len(position[1])):
+                i_b_matrix[i][j] = position[i][j]
     return i_b_matrix
 
 # Function: Velocity
@@ -67,7 +75,9 @@ def update_position(position, velocity, min_values=[-5, -5], max_values=[5, 5]):
     for i in range(len(position)):
         for j in range(len(position[i]) - 1):
             position[i][j] = max(min(position[i][j] + velocity[i][j], max_values[j]), min_values[j])
-        position[i][-1] = target_function(position[i][:-1])
+        # position[i][-1] = target_function(position[i][:-1])
+        position[i][-1] = target_function(position[i][0:(len(position[1])-1)])
+        print(position[i][-1])
     return position
 
 # PSO Function

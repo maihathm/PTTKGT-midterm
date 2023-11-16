@@ -6,13 +6,12 @@ import ReadDistanceMatrix
 import functions
 # Đường dẫn đến tệp chứa dữ liệu
 file_path = 'TSP-02-Coordinates.txt'
-# file_path = 'TSP-01.txt'
-# file_path = 'TSP-02.txt'
 
 # Tạo ma trận khoảng cách
-distance_matrix = ReadDistanceMatrix.readDistanceMatrix("TSP-02.txt")
+distance_matrix = ReadDistanceMatrix.readDistanceMatrix(file_path)
 distance_matrix = functions.replace_values_zero(distance_matrix)
 distance_matrix = functions.replace_list(distance_matrix)
+
 print(f'Hiện tại có tổng cộng {len(distance_matrix)} thành phố trong tour du lịch.')
 print(f'Vui lòng nhập thành phố bạn muốn bắt đầu(Từ 1 đến {len(distance_matrix)}).')
 initial = int(input("Nhập thành phố bạn muốn bắt đầu: "))
