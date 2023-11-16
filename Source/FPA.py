@@ -4,11 +4,11 @@ import random
 import ACO
 
 
-def fitness_function():
+def target_function():
     pass
 
 
-def init_population(N=None, min_val=None, max_val=None, function=fitness_function, initial=1, distance_matrix=None):
+def init_population(N=None, min_val=None, max_val=None, function=target_function, initial=1, distance_matrix=None):
     """
     Init population cho tập N bông hoa:
     :param N: là số lượng bông hoa
@@ -35,17 +35,10 @@ def init_population(N=None, min_val=None, max_val=None, function=fitness_functio
     for i in range(0, N):
         val = position[i][0: len(position[i])]
         alpha, beta, decay = val
-        # print(type(alpha),type(beta),type(decay))
         print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
         route, distance = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
         position[i].append(distance)
     return position
-
-
-# # TODO: Check init_population
-# test_init_population = init_population(N=3, min_val=[0, 0, max_val=[5, 5], function=fitness_function)
-# print("Test init population: ", test_init_population)
-
 
 # Lévy flight
 def levy_flight(beta=None):
@@ -64,12 +57,6 @@ def levy_flight(beta=None):
     sigma = (sig_num / sig_den) ** (1 / beta)
     levy = (0.01 * r1 * sigma) / (abs(r2) ** (1 / beta))
     return levy
-
-
-# # test Lévy flight
-# levy_ = levy_flight(beta=1.5)
-# print("Levy flight: ", levy_)  # 0.005528715490671566 -> Oke
-
 
 # pollination global
 def pollination_global(population: [], best_global: [], flower, gamma, lamb, min_value, max_value, function, initial,
@@ -98,7 +85,6 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
             value = max_value[j]
         x[j] = value
     alpha, beta, decay = x[0:len(min_value)]
-    # print(type(alpha),type(beta),type(decay))
     print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
     route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
     return x
@@ -133,7 +119,7 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
             val = max_value[j]
         x[j] = val
     alpha, beta, decay = x[0:len(min_value)]
-    print(type(alpha),type(beta),type(decay))
+    print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
     route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
     return x
 

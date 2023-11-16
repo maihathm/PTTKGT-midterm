@@ -1,7 +1,7 @@
 # import FPA
 import time
 import ACO
-import FPA
+import pso
 import ReadDistanceMatrix
 import functions
 # Đường dẫn đến tệp chứa dữ liệu
@@ -32,11 +32,9 @@ parameters = {
 }
 # Chạy đoạn code
 
-FPA.flower_pollination_algorithms(flowers=2, min_values=[0.001, 0.001, 0.001],
-                                  max_values=[5, 5, 5], iteration=5,
-                                  gamma=0.1, lamb=1.5, p=0.8,
-                                  initial=initial, distance_matrix=distance_matrix,
-                                  function=ACO.ant_colony_optimization)
+pso.particle_swarm_optimization(swarm_size=3, min_values=[0, 0, 0], max_values=[5, 5, 5], iterations=5, decay=0,
+                                 w=0.9, c1=2, c2=2,initial=initial, distance_matrix=distance_matrix,
+                                  target_function=ACO.ant_colony_optimization)
 # print(f'Tour du lịch: {route}, Tổng khoảng cách: {distance}')
 
 # Kết thúc đo thời gian
