@@ -1,4 +1,5 @@
 import random
+
 '''
 File functions chứa một số hàm hỗ trợ cho việc tính toán file ACO
 '''
@@ -65,22 +66,22 @@ def matrix_multiply(matrix, scalar):
         new_row = [element * scalar for element in row]
         result.append(new_row)
     return result
-    
-def replace_list(list): # Đầu vào là một list các phần tử
-  for i in range(len(list)):
-    for j in range(len(list[i])):
-        if list[i][j] == 0.0:
-            list[i][j] = 999999999999.0
-  return list
+
+
+def replace_list(list):  # Đầu vào là một list các phần tử
+    for i in range(len(list)):
+        for j in range(len(list[i])):
+            if list[i][j] == 0.0:
+                list[i][j] = 999999999999.0
+    return list
+
 
 def replace_values_zero(list):
-  probability = 0.1
-  for i in range(len(list)):
-      for j in range(len(list[0])):
-          random_number = random.random()
-          if random_number < probability:
-              list[i][j] = 0.0
-              list[j][i] = 0.0
-  return list
-
-
+    probability = 0.1
+    for i in range(len(list)):
+        for j in range(len(list[0])):
+            random_number = random.random()
+            if random_number < probability:
+                list[i][j] = 0.0
+                list[j][i] = 0.0
+    return list

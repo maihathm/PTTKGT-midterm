@@ -82,7 +82,7 @@ def city_probability(h, thau, city=0, alpha=1, beta=2, city_list=None):
 
 
 # Function: Select Next City
-def city_selection(probability_matrix, city_list=[]):
+def city_selection(probability_matrix, city_list=None):
     """
     Lựa chọn một thành phố để tham quan tiếp theo dựa trên ma trận xác suất và danh sách các thành phố đã được tham quan.
 
@@ -95,13 +95,16 @@ def city_selection(probability_matrix, city_list=[]):
 
     """
     # Tạo ngẫu nhiên 1 số giữa 0 và 1
+    if city_list is None:
+        city_list = []
     random = int.from_bytes(os.urandom(8), byteorder='big') / ((1 << 64) - 1)
     # Biến lưu trữ thành phố được chọn tiếp theo
     city = 0
     # Duyệt qua các hàng của ma trận xác xuất
     for i in range(0, len(probability_matrix)):
-        # Nếu số cho ngẫu nhiên bằng hoặc nhỏ hơn xác xuất tích lũy của của thành phố và thành phố chưa được tham quan trả về thành phố đó
-        if (random <= probability_matrix[i][2].real and i + 1 not in city_list):
+        # Nếu số cho ngẫu nhiên bằng hoặc nhỏ hơn xác xuất tích lũy của của thành phố và thành phố chưa được tham
+        # quan trả về thành phố đó
+        if random <= probability_matrix[i][2].real and i + 1 not in city_list:
             city = i + 1
             break
     # Trả về thành phố được chọn
@@ -109,7 +112,7 @@ def city_selection(probability_matrix, city_list=[]):
 
 
 # Function: Update Thau
-def update_thau(distance_matrix, thau, city_list=[]):
+def update_thau(distance_matrix, thau, city_list=None):
     """
     Cập nhật ma trận pheromone sau khi hoàn thành một chuyến tham quan.
 
@@ -123,6 +126,8 @@ def update_thau(distance_matrix, thau, city_list=[]):
 
     """
     # Biến lưu trữ tổng khoảng cách của chuyến tham quan
+    if city_list is None:
+        city_list = []
     distance = 0
     # Tạo bản sao danh sách các thành phố trong chuyến tham quan
     city_tour = copy.deepcopy(city_list)
@@ -185,7 +190,7 @@ def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, l
             # Chọn thành phố tiếp theo
             path_point = city_selection(probability, city_list=city_list)
             # Nếu thành phố tiếp theo đã được tham quan
-            if (path_point == 0):
+            if path_point == 0:
                 # Chọn thành phố ngẫu nhiên trong các thành phố chưa được tham quan
                 path_point = [value for value in full_list if value not in city_list][0]
             # Thêm thành phố tiếp theo vào
@@ -198,16 +203,15 @@ def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, l
             # Tính tổng khoảng cách kiến đã đi
             path_distance = path_distance + distance_matrix[(city_list[i]) - 1][(city_list[j]) - 1]
         # So sánh đường đi của kiến với khoảng cách tốt nhất đã được tìm thấy
-        if (distance > path_distance):
+        if distance > path_distance:
             best_city_list = copy.deepcopy(city_list)
             best_path_distance = path_distance
             distance = path_distance
     best_route = copy.deepcopy([best_city_list])
     best_route.append(best_path_distance)
 
-
     # Sử dụng 2_opt để tiếp tục cải thiện đường đi
-    if (local_search == True):
+    if local_search:
         best_city_list, best_path_distance = two_opt.local_search_2_opt(distance_matrix, city_tour=best_route,
                                                                         recursive_seeding=-1)
     # Cập nhập lại ma trận pheromone 
@@ -248,13 +252,10 @@ def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=5, alph
     h = attractiveness(distance_matrix)
     thau = functions.create_empty_matrix_ones(len(distance_matrix), len(distance_matrix))
     # Duyệt qua từng vòng lặp
-    while (count <= iterations):
-        
-                
-        
+    while count <= iterations:
 
         # In ra thông tin tiến trình
-        if (verbose == True and count > 0):
+        if verbose == True and count > 0:
             print('Iteration = ', count, 'Distance = ', round(best_route[1], 2))
             # print(best_route)     
         city_list, path_distance, thau = ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants,
@@ -263,20 +264,19 @@ def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=5, alph
         # print(f"Khoảng cách tốt nhất tại vòng lặp thứ {count}: {path_distance}")
         # print(f"Ma trận pheromone tại vòng lặp thứ {count}: {thau}")
 
-
         # Feedback cho FPA
         # Nếu current_best_distance được cung cấp thì sử dụng nó
         if current_best_distance is not None:
-            if (path_distance > current_best_distance):
+            if path_distance > current_best_distance:
                 print(f"Không tốt hơn")
                 return [], current_best_distance
             else:
                 print(f"FPA tốt nhất hiện tại: {path_distance} so với FPA tốt nhất trước đó: {current_best_distance}")
-            
-        #----------------------------------------------
-            
+
+        # ----------------------------------------------
+
         thau = functions.matrix_multiply(thau, 1 - decay)
-        if (distance > path_distance):
+        if distance > path_distance:
             best_route = copy.deepcopy([city_list])
             best_route.append(path_distance)
             distance = best_route[1]
@@ -284,7 +284,8 @@ def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=5, alph
     route, distance = best_route
     return route, distance
 
+
 def length_of_ACO_tour_with_parameters(distance_matrix):
     return
 
-#run aco
+# run aco

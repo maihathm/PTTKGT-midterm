@@ -7,9 +7,19 @@ import FPA
 import ReadDistanceMatrix
 
 
-def AS_FPA(MaxIteration, MaxFlower, MinValue, MaxValue, initial, distance_matrix, BKS=7542):
-    min_values = [0.001, 0.001, 0.001]  # Giá trị tối thiểu có thể nhận của (alpha, beta, decay)
-    max_values = [5, 5, 5]  # Giá trị tối đa có thể nhận của (alpha, beta, decay)
+def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_matrix, BKS=7542):
+    """
+
+    :param MaxIteration:
+    :param MaxFlower:
+    :param min_values:
+    :param max_values:
+    :param initial:
+    :param distance_matrix:
+    :param BKS:
+
+    :return:
+    """
 
     # Initialization of the Supervising heuristic parameters (alpha, beta, decay)
 
@@ -22,9 +32,14 @@ def AS_FPA(MaxIteration, MaxFlower, MinValue, MaxValue, initial, distance_matrix
     route = []
     distance = 99999999999999
     print("init position FPA")
-    fpa_position = FPA.init_population(N=MaxFlower, min_val=min_values, max_val=max_values,
-                                       function=ACO.ant_colony_optimization, initial=initial,
-                                       distance_matrix=distance_matrix)
+    fpa_position = FPA.init_population(
+        N=MaxFlower,
+        min_val=min_values,
+        max_val=max_values,
+        function=ACO.ant_colony_optimization,
+        initial=initial,
+        distance_matrix=distance_matrix
+    )
 
     for i in range(0, MaxIteration):
         # If reach BKS, stop
@@ -59,8 +74,10 @@ def AS_FPA(MaxIteration, MaxFlower, MinValue, MaxValue, initial, distance_matrix
             alpha=alpha,
             beta=beta,
             decay=decay,
-            local_search=True, verbose=True,
-            initial=initial, distance_matrix=distance_matrix
+            local_search=True,
+            verbose=True,
+            initial=initial,
+            distance_matrix=distance_matrix
         )
         if distance_aco < distance:
             distance = distance_aco
@@ -86,23 +103,13 @@ print('---------------------------------------------------------')
 print('Đang khởi tạo đường đi.........')
 # Bắt đầu đo thời gian
 start_time = time.time()
-# Para cho ACO
-parameters = {
-    'ants': 10,
-    'iterations': 15,
-    'alpha': 1,
-    'beta': 2,
-    'decay': 0.05,
-    'local_search': True,
-    'verbose': True
-}
 
 as_fpa = AS_FPA(
     distance_matrix=distance_matrix,  # Ma trận khoảng cách
     MaxIteration=15,  # Số lần lặp tối đa để giải TSP
     MaxFlower=10,  # Số lượng bông hoa
-    MinValue=[0.001, 0.001, 0.001],
-    MaxValue=[5, 5, 5],
+    min_values=[0.001, 0.001, 0.001],
+    max_values=[5, 5, 5],
     initial=initial
 )
 
