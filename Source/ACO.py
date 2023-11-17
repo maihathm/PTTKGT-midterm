@@ -1,10 +1,8 @@
 import copy
 import os
 import random
-
 import functions
 import two_opt
-
 random.seed(10)
 
 
@@ -224,7 +222,7 @@ def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, l
 # ACO Function
 def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=5, alpha=1, beta=2, decay=0.05,
                             local_search=True,
-                            verbose=True, current_best_distance=None):
+                            verbose=False, current_best_distance=None):
     """
     Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO)
 

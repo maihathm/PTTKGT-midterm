@@ -1,7 +1,6 @@
 # import FPA
 import random
 import time
-
 import ACO
 import FPA
 import ReadDistanceMatrix
@@ -9,16 +8,20 @@ import ReadDistanceMatrix
 
 def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_matrix, BKS=7566):
     """
+    AS-FPA: Một thuật toán lai kết hợp giữa Ant Colony Optimize (ACO), Flower Pollination Algorithm (FPA) và Local Search(2_opt)
+    để giải quyết bài toán Traveling Salesman Problem (TSP).
 
-    :param MaxIteration:
-    :param MaxFlower:
-    :param min_values:
-    :param max_values:
-    :param initial:
-    :param distance_matrix:
-    :param BKS:
-
-    :return:
+    Tham số:
+        MaxIteration (int): Số lần lặp tối đa.
+        MaxFlower (int): Số bông hoa tối đa.
+        min_values (list): Danh sách giá trị tối thiểu cho các tham số của AS (alpha, beta, decay).
+        max_values (list): Danh sách giá trị tối đa cho các tham số của AS (alpha, beta, decay).
+        initial (list): Giải pháp ban đầu.
+        distance_matrix (ndarray): Ma trận khoảng cách giữa các thành phố.
+        BKS (int): Giải pháp tham chiếu (BKS).
+    Trả về:
+        route (list): Giải pháp tốt nhất tìm thấy.
+        distance (float): Khoảng cách tốt nhất tìm thấy.
     """
 
     # Initialization of the Supervising heuristic parameters (alpha, beta, decay)
@@ -31,28 +34,29 @@ def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_ma
     # Initialization of Problem Solving Heuristic (ACO)
     route = []
     distance = 99999999999999
-    print("init position FPA")
-    fpa_position = FPA.init_population(
-        N=MaxFlower,
-        min_val=min_values,
-        max_val=max_values,
-        function=ACO.ant_colony_optimization,
-        initial=initial,
-        distance_matrix=distance_matrix
-    )
+
+    # print("init position FPA")
+    # fpa_position = FPA.init_population(
+    #     N=MaxFlower,
+    #     min_val=min_values,
+    #     max_val=max_values,
+    #     function=ACO.ant_colony_optimization,
+    #     initial=initial,
+    #     distance_matrix=distance_matrix
+    # )
 
     for i in range(0, MaxIteration):
         # If reach BKS, stop
         if distance == BKS:
-            break
+            return
 
         # # Initialization of Problem Solving Heuristic (ACO)
 
         # FPA processing
         print(f'Chạy FPA lần thứ {i + 1}')
         fpa = FPA.flower_pollination_algorithms(
-            position=fpa_position,
-            # flowers=10, # Số lượng bông hoa
+            # position=fpa_position,
+            flowers=10, # Số lượng bông hoa
             min_values=min_values,
             max_values=max_values,
             iteration=5,
@@ -69,21 +73,20 @@ def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_ma
         # Lunch ACO() instances
         print(f"Chạy ACO với alpha = {alpha}, beta = {beta}, decay = {decay}")
         route_aco, distance_aco = ACO.ant_colony_optimization(
-            ants=10,
-            iterations=30,
+            ants=5,
+            iterations=15,
             alpha=alpha,
             beta=beta,
             decay=decay,
             local_search=True,
-            verbose=True,
+            verbose=False,
             initial=initial,
             distance_matrix=distance_matrix
         )
         if distance_aco < distance:
             distance = distance_aco
-            route = route_aco
-        print(f'Khoảng cách tốt nhất hiện tại: {distance}')
-    print(f'Tour: {route}, Tổng khoảng cách: {distance}')
+            route = route_aco  
+        print(f'Tổng khoảng cách tốt nhất hiện tại: {distance}')   
     return route, distance
 
 
@@ -102,14 +105,19 @@ print('Đang khởi tạo đường đi.........')
 # Bắt đầu đo thời gian
 start_time = time.time()
 
-as_fpa = AS_FPA(
+route, distance = AS_FPA(
     distance_matrix=distance_matrix,  # Ma trận khoảng cách
     MaxIteration=15,  # Số lần lặp tối đa để giải TSP
-    MaxFlower=5,  # Số lượng bông hoa
+    MaxFlower=10,  # Số lượng bông hoa
     min_values=[0.001, 0.001, 0.001],
-    max_values=[5, 5, 5],
+    max_values=[5, 5, 1],
     initial=initial
 )
+
+print(f'Đường đi tốt nhất: {route}')
+print(f'Tổng khoảng cách tốt nhất: {distance}')
+
+
 
 # Kết thúc đo thời gian
 end_time = time.time()
