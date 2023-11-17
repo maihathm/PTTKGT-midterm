@@ -7,7 +7,7 @@ import FPA
 import ReadDistanceMatrix
 
 
-def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_matrix, BKS=7542):
+def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_matrix, BKS=7566):
     """
 
     :param MaxIteration:
@@ -70,7 +70,7 @@ def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_ma
         print(f"Chạy ACO với alpha = {alpha}, beta = {beta}, decay = {decay}")
         route_aco, distance_aco = ACO.ant_colony_optimization(
             ants=10,
-            iterations=15,
+            iterations=30,
             alpha=alpha,
             beta=beta,
             decay=decay,
@@ -89,11 +89,9 @@ def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_ma
 
 # Đường dẫn đến tệp chứa dữ liệu
 file_path = 'TSP-02-Coordinates.txt'
-# file_path = 'TSP-01.txt'
-# file_path = 'TSP-02.txt'
 
 # Tạo ma trận khoảng cách
-distance_matrix = ReadDistanceMatrix.readDistanceMatrix("TSP-02.txt")
+distance_matrix = ReadDistanceMatrix.readDistanceMatrix(file_path)
 # distance_matrix = functions.replace_values_zero(distance_matrix)
 # distance_matrix = functions.replace_list(distance_matrix)
 print(f'Hiện tại có tổng cộng {len(distance_matrix)} thành phố trong tour du lịch.')
@@ -107,7 +105,7 @@ start_time = time.time()
 as_fpa = AS_FPA(
     distance_matrix=distance_matrix,  # Ma trận khoảng cách
     MaxIteration=15,  # Số lần lặp tối đa để giải TSP
-    MaxFlower=10,  # Số lượng bông hoa
+    MaxFlower=5,  # Số lượng bông hoa
     min_values=[0.001, 0.001, 0.001],
     max_values=[5, 5, 5],
     initial=initial
