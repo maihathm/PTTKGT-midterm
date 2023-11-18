@@ -1,4 +1,3 @@
-# import FPA
 import random
 import time
 import ACO
@@ -8,7 +7,7 @@ import ReadDistanceMatrix
 
 def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_matrix, BKS=7566):
     """
-    AS-FPA: Một thuật toán lai kết hợp giữa Ant Colony Optimize (ACO), Flower Pollination Algorithm (FPA) và Local Search(2_opt)
+    AS-FPA: Một thuật toán kết hợp giữa Ant Colony Optimize (ACO), Flower Pollination Algorithm (FPA) và Local Search(2_opt)
     để giải quyết bài toán Traveling Salesman Problem (TSP).
 
     Tham số:
@@ -86,13 +85,15 @@ def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_ma
         if distance_aco < distance:
             distance = distance_aco
             route = route_aco  
+        print(f'Đường đi tốt nhất hiện tại: {route}')
         print(f'Tổng khoảng cách tốt nhất hiện tại: {distance}')   
     return route, distance
 
 
 # Đường dẫn đến tệp chứa dữ liệu
-file_path = 'TSP-02-Coordinates.txt'
-
+# file_path = 'TSP-02-Coordinates.txt'
+# file_path = 'TSP-02.txt'
+file_path = 'TSP-01.txt'
 # Tạo ma trận khoảng cách
 distance_matrix = ReadDistanceMatrix.readDistanceMatrix(file_path)
 # distance_matrix = functions.replace_values_zero(distance_matrix)

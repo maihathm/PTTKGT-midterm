@@ -205,7 +205,7 @@ def flower_pollination_algorithms(flowers=3, position=None, min_values=None, max
     best_global = sorted(position, key=lambda x: x[-1])[0]
     x = best_global.copy()
     for loop in range(iteration + 1):
-        print(f"Vòng lặp thứ {loop}, f(x) = {best_global}")
+        # print(f"Vòng lặp thứ {loop}, f(x) = {best_global}")
         for i in range(0, len(position)):
             nb_flower_1 = random.randint(0, len(position) - 1)
             nb_flower_2 = random.randint(0, len(position) - 1)
