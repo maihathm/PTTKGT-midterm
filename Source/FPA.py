@@ -14,7 +14,7 @@ def fitness_function():
     pass
 
 
-def init_population(N=None, min_val=None, max_val=None, function=None, initial=1, distance_matrix=None):
+def init_population(N:int=None, min_val:list=None, max_val:list=None, function=None, initial:int=1, distance_matrix:list=None)->list:
     """
     Khởi tạo quần thể cá thể ban đầu cho thuật toán tối ưu hóa dựa trên quần thể.
 
@@ -71,7 +71,7 @@ def init_population(N=None, min_val=None, max_val=None, function=None, initial=1
 
 
 # Lévy flight
-def levy_flight(beta=None):
+def levy_flight(beta:float=None)->float:
     """
     Tạo ra một bước nhảy Lévy với tham số beta
 
@@ -102,8 +102,9 @@ def levy_flight(beta=None):
 
 
 # pollination global
-def pollination_global(population: [], best_global: [], flower, gamma, lamb, min_value, max_value, function, initial,
-                       distance_matrix, distance=None):
+def pollination_global(population: [], best_global: [], flower:int, gamma:float, lamb:float,
+                       min_value:list, max_value:list, function, initial:int,
+                       distance_matrix:list, distance=None)->list:
     """
     Thực hiện phép thụ phấn toàn cầu trong thuật toán FPA
 
@@ -118,6 +119,7 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
         function: Hàm mục tiêu được sử dụng để đánh giá mỗi cá thể trong quần thể
         initial: Giá trị ban đầu của tuyến đường
         distance_matrix: Ma trận khoảng cách giữa các điểm trong tuyến đường
+        distance: Giá trị đạt được tốt nhất đã biết
 
     Returns:
         Cá thể được cập nhật sau khi thực hiện phép thụ phấn toàn cầu
@@ -153,8 +155,8 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
     return x
 
 
-def pollination_local(population: [], best_global: [], flower, nb_flower1=None, nb_flower2=None, min_value=None,
-                      max_value=None, function=None, initial=1, distance_matrix=None, distance=None):
+def pollination_local(population: [], best_global: [], flower:int, nb_flower1:float=None, nb_flower2:float=None, min_value:list=None,
+                      max_value:list=None, function=None, initial:int=1, distance_matrix:list=None, distance=None)->list:
     """
     Thực hiện phép thụ phấn địa phương trong thuật toán FPA
 
@@ -169,7 +171,7 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
         function: Hàm mục tiêu được sử dụng để đánh giá mỗi cá thể trong quần thể
         initial: Giá trị ban đầu của tuyến đường
         distance_matrix: Ma trận khoảng cách giữa các điểm trong tuyến đường
-
+        distance: Giá trị đạt được tốt nhất đã biết
     Returns:
         Cá thể được cập nhật sau khi thực hiện phép thụ phấn địa phương
     """
@@ -193,14 +195,15 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
 
 
 # Flower Pollination Algorithms
-def flower_pollination_algorithms(flowers=3, position=None, min_values=None, max_values=None, iteration=50, gamma=0.5,
-                                  lamb=1.4,
-                                  p=0.8, initial=1, distance_matrix=None, function=None, distance=None):
+def flower_pollination_algorithms(flowers:int=3, position:list=None, min_values:list=None, max_values:list=None,
+                                  iteration:int=50, gamma:float=0.5,lamb:float=1.4,
+                                  p:float=0.8, initial:int=1, distance_matrix:list=None, function=None, distance=None)->list:
     """
     Tối ưu hóa dựa trên quần thể FPA
 
     Args:
         flowers: Số lượng cá thể trong quần thể (nếu không được cung cấp, giá trị mặc định là 3)
+        position: vị trí của phấn hoa
         min_values: Danh sách các giá trị tối thiểu cho mỗi tham số cá thể (nếu không được cung cấp, giá trị mặc định là `[0, 0, 0]`)
         max_values: Danh sách các giá trị tối đa cho mỗi tham số cá thể (nếu không được cung cấp, giá trị mặc định là `[5, 5, 5]`)
         iteration: Số lượng lặp của thuật toán (nếu không được cung cấp, giá trị mặc định là 50)
@@ -210,7 +213,7 @@ def flower_pollination_algorithms(flowers=3, position=None, min_values=None, max
         initial: Giá trị ban đầu của tuyến đường (nếu không được cung cấp, giá trị mặc định là 1)
         distance_matrix: Ma trận khoảng cách giữa các điểm trong tuyến đường (nếu không được cung cấp, giá trị mặc định là `None`)
         function: Hàm mục tiêu được sử dụng để đánh giá mỗi cá thể trong quần thể
-
+        distance: Giá trị đạt được tốt nhất đã biết
     Returns:
         Cá thể tốt nhất toàn cầu
     """
