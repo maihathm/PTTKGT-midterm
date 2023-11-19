@@ -1,13 +1,25 @@
-# import FPA
-import os
+"""
+Mã nguồn triển khai đọc dữ liệu đầu vào.
+"""
 
+import os
 import distance_matrix
 
-
-# Đường dẫn đến tệp chứa dữ liệu
-# file_path = 'TSP-02-Coordinates.txt'
-# file_path = 'TSP-01.txt'
 def readDistanceMatrix(file_path):
+    """
+    Đọc một tệp dữ liệu chứa ma trận khoảng cách từ định dạng được chỉ định và trả về ma trận khoảng cách.
+
+    Args:
+        file_path (str): Đường dẫn đến tệp dữ liệu chứa ma trận khoảng cách.
+
+    Returns:
+        list of list: Ma trận khoảng cách giữa các điểm trong dữ liệu.
+          - Mỗi dòng của ma trận chứa các giá trị khoảng cách từ một điểm đến tất cả các điểm còn lại.
+          - Dữ liệu được đọc từ tệp và chuyển thành ma trận.
+
+    Raises:
+        FileNotFoundError: Nếu tệp không tồn tại.
+    """
     # Kiểm tra xem tệp tồn tại
     if os.path.exists(file_path):
         # Mở tệp để đọc

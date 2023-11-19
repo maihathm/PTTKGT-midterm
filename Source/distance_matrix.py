@@ -1,5 +1,9 @@
-import math
+"""
+Mã nguồn này dùng để tạo ma trận khoảng cách giữa các điểm trong dữ liệu.
+Khoảng cách của 2 điểm được tính theo công thức Euclidean.
+"""
 
+import math
 
 def build_distance_matrix(data):
     """Tạo ma trận khoảng cách giữa các điểm trong dữ liệu.

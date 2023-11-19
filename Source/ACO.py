@@ -1,10 +1,13 @@
+"""
+Mã nguồn triển khải thuật toán Ant Colony Optimization
+"""
+
 import copy
 import os
 import random
 import functions
 import two_opt
 random.seed(10)
-
 
 # Function: Initial Attractiveness
 def attractiveness(distance_matrix):
@@ -254,13 +257,9 @@ def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=5, alph
 
         # In ra thông tin tiến trình
         if verbose == True and count > 0:
-            print('Iteration = ', count, 'Distance = ', round(best_route[1], 2))
-            # print(best_route)     
+            print('Iteration = ', count, 'Distance = ', round(best_route[1], 2))     
         city_list, path_distance, thau = ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants,
                                                    local_search)
-        # print(f"Đường đi tốt nhất tại vòng lặp thứ {count}: {city_list}")
-        # print(f"Khoảng cách tốt nhất tại vòng lặp thứ {count}: {path_distance}")
-        # print(f"Ma trận pheromone tại vòng lặp thứ {count}: {thau}")
 
         # Feedback cho FPA
         # Nếu current_best_distance được cung cấp thì sử dụng nó

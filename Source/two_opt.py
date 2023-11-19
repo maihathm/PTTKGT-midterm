@@ -1,9 +1,11 @@
-# Function: Tour Distance
+"""
+Mã nguồn triển khải thuật toán Local_search
+"""
 import copy
 
-
 def distance_calc(distance_matrix, city_tour):
-    """Tính tổng khoảng cách của một tour du lịch.
+    """
+  Tính tổng khoảng cách của một tour du lịch.
 
   Args:
     distance_matrix: Ma trận khoảng cách giữa các thành phố. [ ]
@@ -24,7 +26,8 @@ def distance_calc(distance_matrix, city_tour):
 
 # Function: 2_opt
 def local_search_2_opt(distance_matrix, city_tour, recursive_seeding=-1):
-    """Tìm kiếm cục bộ 2-opt để cải thiện tour du lịch.
+    """
+    Tìm kiếm cục bộ 2-opt để cải thiện tour du lịch.
 
   Args:
     distance_matrix: Ma trận khoảng cách giữa các thành phố.

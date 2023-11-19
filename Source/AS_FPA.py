@@ -1,3 +1,6 @@
+"""
+Mã nguồn triển khai để giải quyết vấn đề Traveling Salesman Problem.
+"""
 import random
 import time
 import ACO
@@ -23,8 +26,6 @@ def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_ma
         distance (float): Khoảng cách tốt nhất tìm thấy.
     """
 
-    # Initialization of the Supervising heuristic parameters (alpha, beta, decay)
-
     # Tạo alpha, beta, decay ban đầu
     alpha = random.uniform(min_values[0], max_values[0])
     beta = random.uniform(min_values[1], max_values[1])
@@ -33,16 +34,6 @@ def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_ma
     # Initialization of Problem Solving Heuristic (ACO)
     route = []
     distance = 99999999999999
-
-    # print("init position FPA")
-    # fpa_position = FPA.init_population(
-    #     N=MaxFlower,
-    #     min_val=min_values,
-    #     max_val=max_values,
-    #     function=ACO.ant_colony_optimization,
-    #     initial=initial,
-    #     distance_matrix=distance_matrix
-    # )
 
     for i in range(0, MaxIteration):
         # If reach BKS, stop
@@ -90,19 +81,32 @@ def AS_FPA(MaxIteration, MaxFlower, min_values, max_values, initial, distance_ma
     return route, distance
 
 
-# Đường dẫn đến tệp chứa dữ liệu
-# file_path = 'TSP-02-Coordinates.txt'
+# Đường dẫn đến tệp chứa dữ liệu (Có 3 file test được để sẵn). Mặc định file 'TSP-02-Coordinates.txt'
+file_path = 'TSP-02-Coordinates.txt'
 # file_path = 'TSP-02.txt'
-file_path = 'TSP-01.txt'
+# file_path = 'TSP-01.txt'
+
 # Tạo ma trận khoảng cách
 distance_matrix = ReadDistanceMatrix.readDistanceMatrix(file_path)
-# distance_matrix = functions.replace_values_zero(distance_matrix)
-# distance_matrix = functions.replace_list(distance_matrix)
+
+"""
+Nhập thành phố muốn bắt đầu.
+"""
 print(f'Hiện tại có tổng cộng {len(distance_matrix)} thành phố trong tour du lịch.')
 print(f'Vui lòng nhập thành phố bạn muốn bắt đầu(Từ 1 đến {len(distance_matrix)}).')
-initial = int(input("Nhập thành phố bạn muốn bắt đầu: "))
+while True:
+    try:
+        initial = int(input("Nhập thành phố bạn muốn bắt đầu: "))
+        if 1 <= initial <= len(distance_matrix):
+            break  # Thoát khỏi vòng lặp nếu giá trị là hợp lệ
+        else:
+            print(f'Giá trị không hợp lệ. Vui lòng nhập giá trị từ 1 đến {len(distance_matrix)}.')
+    except ValueError:
+        print("Lỗi: Hãy nhập một số nguyên.")
+
 print('---------------------------------------------------------')
 print('Đang khởi tạo đường đi.........')
+
 # Bắt đầu đo thời gian
 start_time = time.time()
 

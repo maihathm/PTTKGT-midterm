@@ -1,8 +1,16 @@
+"""
+Mã nguồn của thuật toán tối ưu hóa sử dụng giải thuật Flower Pollination Algorithm (FPA)
+File này là một phần của việc triển khai giải thuật FPA để giải quyết bài toán tối ưu hóa cụ thể.
+Liên quan đến việc tối ưu hóa các tham số alpha, beta, decay của ACO.
+"""
 import math
 import random
 
 
 def fitness_function():
+    """
+    Chưa được triển khai (đang giữ lại với lời gọi "pass"). Đây sẽ là hàm mục tiêu cần tối ưu hóa.
+    """
     pass
 
 
@@ -21,6 +29,7 @@ def init_population(N=None, min_val=None, max_val=None, function=None, initial=1
     Returns:
         Danh sách các cá thể
     """
+    # Kiểm tra và gán giá trị mặc định cho số lượng cá thể, giá trị tối đa, và giá trị tối thiểu của mỗi tham số
     if N is None:
         N = 3
     if max_val is None:
@@ -28,18 +37,26 @@ def init_population(N=None, min_val=None, max_val=None, function=None, initial=1
     if min_val is None:
         min_val = [0.001, 0.001, 0.001]
 
+    # Khởi tạo danh sách 'position' để lưu trữ thông tin về các cá thể trong quần thể
     position = []
+
+    # Duyệt qua mỗi cá thể trong quần thể
     for i in range(0, N):
+        # Khởi tạo danh sách 'temp' để lưu trữ giá trị ngẫu nhiên của các tham số cho mỗi cá thể
         temp = []
+        # Duyệt qua từng tham số và tạo giá trị ngẫu nhiên trong khoảng từ tối thiểu đến tối đa
         for j in range(0, len(min_val)):
             random_val = random.uniform(min_val[j], max_val[j])
             temp.append(random_val)
+        # Thêm danh sách 'temp' vào danh sách 'position'
         position.append(temp)
+
+    # Đánh giá mỗi cá thể và tính toán giá trị khoảng cách
     for i in range(0, N):
+        # Lấy giá trị tham số từ cá thể thứ i
         val = position[i][0: len(position[i])]
         alpha, beta, decay = val
-        # print(type(alpha),type(beta),type(decay))
-        # print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
+        # Gọi hàm 'function' để tính toán giá trị 'route' và 'distance' dựa trên tham số của cá thể
         route, distance = function(
             initial=initial,
             distance_matrix=distance_matrix,
@@ -48,13 +65,9 @@ def init_population(N=None, min_val=None, max_val=None, function=None, initial=1
             decay=float(decay),
             local_search=False
         )
+        # Thêm giá trị khoảng cách đã tính toán vào danh sách của cá thể tương ứng trong 'position'
         position[i].append(distance)
     return position
-
-
-# # TODO: Check init_population
-# test_init_population = init_population(N=3, min_val=[0, 0, max_val=[5, 5], function=fitness_function)
-# print("Test init population: ", test_init_population)
 
 
 # Lévy flight
@@ -68,20 +81,24 @@ def levy_flight(beta=None):
     Returns:
         Bước nhảy Lévy
     """
+    # Kiểm tra và gán giá trị mặc định cho tham số beta
     if beta is None:
         beta = 1.5
+
+    # Tạo các giá trị ngẫu nhiên
     r1 = random.uniform(0, 1)
     r2 = random.uniform(0, 1)
+
+    # Tính toán các thành phần của phân phối Lévy-Stable
     sig_num = math.gamma((1 + beta)) * math.sin((math.pi * beta) / 2.0)
     sig_den = math.gamma((1 + beta) / 2) * beta * 2 ** ((beta - 1) / 2)
+
+    # Tính toán giá trị sigma
     sigma = (sig_num / sig_den) ** (1 / beta)
+
+    # Tính toán và trả về bước nhảy Lévy
     levy = (0.01 * r1 * sigma) / (abs(r2) ** (1 / beta))
     return levy
-
-
-# # test Lévy flight
-# levy_ = levy_flight(beta=1.5)
-# print("Levy flight: ", levy_)  # 0.005528715490671566 -> Oke
 
 
 # pollination global
@@ -105,18 +122,25 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
     Returns:
         Cá thể được cập nhật sau khi thực hiện phép thụ phấn toàn cầu
     """
-
+    # Tạo một bản sao của cá thể tốt nhất toàn cầu để cập nhật
     x = best_global.copy()
+
+    # Duyệt qua từng tham số của cá thể và cập nhật giá trị dựa trên thuật toán FPA
     for j in range(0, len(min_value)):
         value = population[flower][j] + gamma * levy_flight(lamb) * (population[flower][j] - best_global[j])
+        # Kiểm tra giá trị mới và đảm bảo nằm trong khoảng tối thiểu và tối đa
         if value < min_value[j]:
             value = min_value[j]
         if value > max_value[j]:
             value = max_value[j]
+
+        # Cập nhật giá trị trong cá thể được sao chép từ cá thể tốt nhất toàn cầu
         x[j] = value
+
+    # Lấy giá trị tham số từ cá thể được cập nhật
     alpha, beta, decay = x[0:len(min_value)]
-    # print(type(alpha),type(beta),type(decay))
-    # print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
+
+    # Gọi hàm mục tiêu để tính toán giá trị tuyến đường và khoảng cách
     route, x[-1] = function(
         initial=initial,
         distance_matrix=distance_matrix,
@@ -125,10 +149,10 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
         decay=float(decay),
         local_search=False,
         current_best_distance=distance)
+
     return x
 
 
-# pollination local
 def pollination_local(population: [], best_global: [], flower, nb_flower1=None, nb_flower2=None, min_value=None,
                       max_value=None, function=None, initial=1, distance_matrix=None, distance=None):
     """
@@ -163,7 +187,6 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
             val = max_value[j]
         x[j] = val
     alpha, beta, decay = x[0:len(min_value)]
-    # print(type(alpha),type(beta),type(decay))
     route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay),
                             local_search=False, current_best_distance=distance)
     return x
@@ -191,30 +214,33 @@ def flower_pollination_algorithms(flowers=3, position=None, min_values=None, max
     Returns:
         Cá thể tốt nhất toàn cầu
     """
+    # Thiết lập giá trị mặc định nếu không được cung cấp
     if max_values is None:
         max_values = [5, 5, 5]
     if min_values is None:
         min_values = [0, 0, 0]
     count = 0
+
+    # Khởi tạo quần thể nếu không được cung cấp
     if position is None:
-        # print("Khởi tạo bông hoa")
         position = init_population(N=flowers, min_val=min_values, function=function, max_val=max_values, initial=initial
                                    , distance_matrix=distance_matrix)
-    # else:
-    #     print("Đã khởi tạo bông hoa")
+
+    # Tìm cá thể tốt nhất toàn cầu trong quần thể ban đầu
     best_global = sorted(position, key=lambda x: x[-1])[0]
     x = best_global.copy()
+
+    # Bắt đầu vòng lặp chính của thuật toán
     for loop in range(iteration + 1):
-        # print(f"Vòng lặp thứ {loop}, f(x) = {best_global}")
         for i in range(0, len(position)):
             nb_flower_1 = random.randint(0, len(position) - 1)
             nb_flower_2 = random.randint(0, len(position) - 1)
+            # Đảm bảo chọn hai cá thể khác nhau
             while nb_flower_1 == nb_flower_2:
                 nb_flower_2 = random.randint(0, len(position) - 1)
             r = random.uniform(0, 1)
-
+            # Thực hiện phép thụ phấn toàn cầu hoặc địa phương tùy thuộc vào giá trị ngẫu nhiên r
             if r < p:
-                # print("Global Pollination")
                 x = pollination_global(
                     population=position,
                     best_global=best_global,
@@ -226,12 +252,8 @@ def flower_pollination_algorithms(flowers=3, position=None, min_values=None, max
                     function=function,
                     initial=initial,
                     distance_matrix=distance_matrix,
-
-
-                    # distance=distance  # Khoảng cách tốt nhất hiện tại
                 )
             else:
-                # print("Local Pollination")
                 x = pollination_local(
                     population=position,
                     flower=i,
@@ -243,14 +265,16 @@ def flower_pollination_algorithms(flowers=3, position=None, min_values=None, max
                     best_global=best_global,
                     initial=initial,
                     distance_matrix=distance_matrix,
-
-                    # distance=distance  # Khoảng cách tốt nhất hiện tại
                 )
+
+            # So sánh khoảng cách của cá thể đã cập nhật với cá thể hiện tại
             if x[-1] <= position[i][-1]:
                 for j in range(0, len(position[0])):
                     position[i][j] = x[j]
+
+            # Tìm cá thể tốt nhất trong quần thể sau mỗi cập nhật
             val = sorted(position, key=lambda x: x[-1])[0]
             if best_global[-1] > val[-1]:
-                # print("Updated best global")
                 best_global = val
     return best_global
+

@@ -1,16 +1,22 @@
-import random
+"""
+Mã nguồn này dùng để hỗ trợ việc tính toán một số chức năng của list, ma trận, ...
+"""
 
-'''
-File functions chứa một số hàm hỗ trợ cho việc tính toán file ACO
-'''
+def sum_list(list):
+    """
+    Tính tổng của tất cả các phần tử trong danh sách lồng nhau.
 
+    Args:
+        lst (list): Danh sách lồng nhau chứa các số nguyên hoặc số thực.
 
-def sum_list(list):  # Đầu vào là một list các phần tử
+    Returns:
+        float or int: Tổng của tất cả các phần tử trong danh sách.
+    """
     total = 0
     for sublist in list:
         for item in sublist:
             total += item
-    return total  # Trả về tổng các phần tử có trong list
+    return total 
 
 
 def create_empty_matrix(rows, cols):
@@ -23,7 +29,6 @@ def create_empty_matrix(rows, cols):
     Returns:
       Ma trận trống với kích thước `(rows, cols)`.
     """
-
     matrix = []
     for row in range(rows):
         matrix.append([])
@@ -33,7 +38,8 @@ def create_empty_matrix(rows, cols):
 
 
 def create_empty_matrix_ones(rows, cols):
-    """Tạo ma trận trống với kích thước `(rows, cols)`.
+    """
+    Tạo ma trận trống với kích thước `(rows, cols)`.
 
     Args:
       rows: Số hàng của ma trận.
@@ -42,7 +48,6 @@ def create_empty_matrix_ones(rows, cols):
     Returns:
       Ma trận trống với kích thước `(rows, cols)`.
     """
-
     matrix = []
     for row in range(rows):
         matrix.append([])
@@ -52,7 +57,8 @@ def create_empty_matrix_ones(rows, cols):
 
 
 def matrix_multiply(matrix, scalar):
-    """Nhân ma trận với một số vô hướng
+    """
+    Nhân ma trận với một số vô hướng
 
     Args:
       matrix: Ma trận đầu vào.
@@ -67,21 +73,3 @@ def matrix_multiply(matrix, scalar):
         result.append(new_row)
     return result
 
-
-def replace_list(list):  # Đầu vào là một list các phần tử
-    for i in range(len(list)):
-        for j in range(len(list[i])):
-            if list[i][j] == 0.0:
-                list[i][j] = 999999999999.0
-    return list
-
-
-def replace_values_zero(list):
-    probability = 0.1
-    for i in range(len(list)):
-        for j in range(len(list[0])):
-            random_number = random.random()
-            if random_number < probability:
-                list[i][j] = 0.0
-                list[j][i] = 0.0
-    return list
