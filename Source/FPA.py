@@ -127,17 +127,22 @@ def pollination_local(population: [], best_global: [], flower:int , nb_flower1:f
     if nb_flower2 is None:
         nb_flower2 = 1
     x = best_global.copy()
+    # r là 1 số ngẫu nhiên từ 0 đến 1
     for j in range(0, len(min_value)):
         r = random.uniform(0, 1)
+        # val bằng với bông hoa hiện tại + r (hiệu 2 vị trí 2 bông hoa vị trí j và k (khác nhau))
         val = population[flower][j] + r * (population[nb_flower1][j] - population[nb_flower2][j])
         if val < min_value[j]:
             val = min_value[j]
         if val > max_value[j]:
             val = max_value[j]
+        # Cập nhật x_j thành val
         x[j] = val
+    # Gán lại giá trị cho val.
     alpha, beta, decay = x[0:len(min_value)]
     print(f'alpha: {alpha}, beta: {beta}, decay {decay}')
     route, x[-1] = function(initial, distance_matrix, alpha=float(alpha), beta=float(beta), decay=float(decay))
+    # Trả về bông hoa x sau khi cập nhật local pollination.
     return x
 
 
