@@ -72,4 +72,25 @@ def matrix_multiply(matrix, scalar):
         new_row = [element * scalar for element in row]
         result.append(new_row)
     return result
+def find_best_global(positions):
+    """
+    Tìm và trả về phần tử có giá trị cuối cùng (vị trí cuối cùng trong mỗi sublist) lớn nhất trong danh sách.
+    
+    Parameters:
+    - positions: Danh sách chứa các danh sách con, mỗi danh sách con có ít nhất một phần tử.
+    
+    Returns:
+    - Phần tử có giá trị cuối cùng lớn nhất trong danh sách.
+    """
+    if not positions:
+        return None  # Trả về None nếu danh sách rỗng
 
+    # Khởi tạo phần tử có giá trị cuối cùng lớn nhất
+    best_global = positions[0]
+
+    # Duyệt qua danh sách để tìm phần tử bé nhất
+    for position in positions:
+        if position[-1] < best_global[-1]:
+            best_global = position
+    
+    return best_global

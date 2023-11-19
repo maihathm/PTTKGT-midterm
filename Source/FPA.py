@@ -5,7 +5,7 @@ Liên quan đến việc tối ưu hóa các tham số alpha, beta, decay của 
 """
 import math
 import random
-
+import functions
 
 def fitness_function():
     """
@@ -230,7 +230,7 @@ def flower_pollination_algorithms(flowers:int=3, position:list=None, min_values:
                                    , distance_matrix=distance_matrix)
 
     # Tìm cá thể tốt nhất toàn cầu trong quần thể ban đầu
-    best_global = sorted(position, key=lambda x: x[-1])[0]
+    best_global = functions.find_best_global(position)
     x = best_global.copy()
 
     # Bắt đầu vòng lặp chính của thuật toán
@@ -276,7 +276,7 @@ def flower_pollination_algorithms(flowers:int=3, position:list=None, min_values:
                     position[i][j] = x[j]
 
             # Tìm cá thể tốt nhất trong quần thể sau mỗi cập nhật
-            val = sorted(position, key=lambda x: x[-1])[0]
+            val = functions.find_best_global(position)
             if best_global[-1] > val[-1]:
                 best_global = val
     return best_global
