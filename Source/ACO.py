@@ -9,7 +9,7 @@ random.seed(10)
 
 
 # Function: Initial Attractiveness
-def attractiveness(distance_matrix):
+def attractiveness(distance_matrix:list)->list:
     """Tính độ hấp dẫn của một ma trận khoảng cách.
 
   Args:
@@ -31,7 +31,7 @@ def attractiveness(distance_matrix):
 
 
 # Function: Probability Matrix
-def city_probability(h, thau, city=0, alpha=1, beta=2, city_list=[]):
+def city_probability(h:list, thau:list, city:int=0, alpha:float=1, beta:float=2, city_list:list=[])->list:
     """
     Tính toán xác suất tham quan của mỗi thành phố trong một chuyến du lịch dựa trên ma trận pheromone, ma trận heuristic và thành phố hiện tại.
 
@@ -79,7 +79,7 @@ def city_probability(h, thau, city=0, alpha=1, beta=2, city_list=[]):
 
 
 # Function: Select Next City
-def city_selection(probability_matrix, city_list=[]):
+def city_selection(probability_matrix:list, city_list:list=[])->int:
     """
     Lựa chọn một thành phố để tham quan tiếp theo dựa trên ma trận xác suất và danh sách các thành phố đã được tham quan.
 
@@ -106,7 +106,7 @@ def city_selection(probability_matrix, city_list=[]):
 
 
 # Function: Update Thau
-def update_thau(distance_matrix, thau, city_list=[]):
+def update_thau(distance_matrix:list, thau:list, city_list:list=[])->list:
     """
     Cập nhật ma trận pheromone sau khi hoàn thành một chuyến tham quan.
 
@@ -144,7 +144,7 @@ def update_thau(distance_matrix, thau, city_list=[]):
 
 
 # Function: Ants City List
-def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, local_search):
+def ants_path(initial:int, distance_matrix:list, h:list, thau:list, alpha:float, beta:float, full_list:list, ants:int, local_search:bool):
     """
     Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO).
 
@@ -156,7 +156,7 @@ def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, l
         alpha: Hệ số alpha.
         beta: Hệ số beta.
         full_list: Danh sách đầy đủ các thành phố.
-        ants: Số lượng ong.
+        ants: Số lượng kiến.
         local_search: Có thực hiện tìm kiếm cục bộ hay không.
 
     Returns:
@@ -213,9 +213,9 @@ def ants_path(initial, distance_matrix, h, thau, alpha, beta, full_list, ants, l
 
 
 # ACO Function
-def ant_colony_optimization(initial, distance_matrix, ants=5, iterations=30, alpha=1, beta=2, decay=0.05,
-                            local_search=True,
-                            verbose=True):
+def ant_colony_optimization(initial:int, distance_matrix:list, ants:int=5, iterations:int=30, alpha:float=1, beta:float=2, decay:float=0.05,
+                            local_search:bool=True,
+                            verbose:bool=True):
     """
     Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO)
 

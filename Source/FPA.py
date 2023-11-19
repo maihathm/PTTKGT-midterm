@@ -8,7 +8,7 @@ def target_function():
     pass
 
 
-def init_population(N=None, min_val=None, max_val=None, function=target_function, initial=1, distance_matrix=None):
+def init_population(N:int = None, min_val:list = None, max_val:list = None, function=target_function, initial:int =1, distance_matrix:list = None)->list:
     """
     Khởi tạo quần thể cá thể ban đầu cho thuật toán tối ưu hóa dựa trên quần thể.
 
@@ -46,7 +46,7 @@ def init_population(N=None, min_val=None, max_val=None, function=target_function
     return position
 
 # Lévy flight
-def levy_flight(beta=None):
+def levy_flight(beta: float=None)->float:
     """
     Tạo ra một bước nhảy Lévy với tham số beta
 
@@ -67,8 +67,8 @@ def levy_flight(beta=None):
     return levy
 
 # pollination global
-def pollination_global(population: [], best_global: [], flower, gamma, lamb, min_value, max_value, function, initial,
-                       distance_matrix):
+def pollination_global(population: [], best_global: [], flower:int, gamma:float, lamb:float, min_value:list, max_value:list, function, initial:int,
+                       distance_matrix:list)->list:
     """
     Thực hiện phép thụ phấn toàn cầu trong thuật toán FPA
 
@@ -102,8 +102,8 @@ def pollination_global(population: [], best_global: [], flower, gamma, lamb, min
 
 
 # pollination local
-def pollination_local(population: [], best_global: [], flower, nb_flower1=None, nb_flower2=None, min_value=None,
-                      max_value=None, function=None, initial=1, distance_matrix=None):
+def pollination_local(population: [], best_global: [], flower:int , nb_flower1:float=None, nb_flower2:float=None, min_value:list=None,
+                      max_value:list=None, function=None, initial:int=1, distance_matrix:list=None)->list:
     """
     Thực hiện phép thụ phấn địa phương trong thuật toán FPA
 
@@ -142,8 +142,8 @@ def pollination_local(population: [], best_global: [], flower, nb_flower1=None, 
 
 
 # Flower Pollination Algorithms
-def flower_pollination_algorithms(flowers=3, min_values=None, max_values=None, iteration=50, gamma=0.5, lamb=1.4,
-                                  p=0.8, initial=1, distance_matrix=None, function=None):
+def flower_pollination_algorithms(flowers:int=3, min_values:list=None, max_values:list=None, iteration:int=50, gamma:float=0.5, lamb:float=1.4,
+                                  p:float=0.8, initial:float=1, distance_matrix:list=None, function=None)->list:
     """
     Tối ưu hóa dựa trên quần thể FPA
 

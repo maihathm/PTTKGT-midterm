@@ -31,7 +31,7 @@ def local_search_2_opt(distance_matrix, city_tour, recursive_seeding=-1):
     city_tour: Một tour du lịch, được biểu diễn bằng một danh sách các thành phố
       theo thứ tự tham quan.
     recursive_seeding: Số lần lặp của thuật toán tìm kiếm cục bộ 2-opt.
-      Nếu `recursive_seeding < 0`, thuật toán sẽ chạy cho đến khi không thể cải thiện
+      Nếu `      < 0`, thuật toán sẽ chạy cho đến khi không thể cải thiện
       tour du lịch được nữa.
 
   Returns:
