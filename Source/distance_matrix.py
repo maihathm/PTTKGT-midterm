@@ -5,7 +5,7 @@ Khoảng cách của 2 điểm được tính theo công thức Euclidean.
 
 import math
 
-def build_distance_matrix(data):
+def build_distance_matrix(data:list)->list:
     """Tạo ma trận khoảng cách giữa các điểm trong dữ liệu.
 
   Args:

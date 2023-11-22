@@ -2,12 +2,12 @@
 Mã nguồn này dùng để hỗ trợ việc tính toán một số chức năng của list, ma trận, ...
 """
 
-def sum_list(list):
+def sum_list(list:list)->float:
     """
     Tính tổng của tất cả các phần tử trong danh sách lồng nhau.
 
     Args:
-        lst (list): Danh sách lồng nhau chứa các số nguyên hoặc số thực.
+        lst : Danh sách lồng nhau chứa các số nguyên hoặc số thực.
 
     Returns:
         float or int: Tổng của tất cả các phần tử trong danh sách.
@@ -19,7 +19,7 @@ def sum_list(list):
     return total 
 
 
-def create_empty_matrix(rows, cols):
+def create_empty_matrix(rows:int, cols:int)->list:
     """Tạo ma trận trống với kích thước `(rows, cols)`.
 
     Args:
@@ -37,7 +37,7 @@ def create_empty_matrix(rows, cols):
     return matrix
 
 
-def create_empty_matrix_ones(rows, cols):
+def create_empty_matrix_ones(rows:int, cols:int)->list:
     """
     Tạo ma trận trống với kích thước `(rows, cols)`.
 
@@ -56,7 +56,7 @@ def create_empty_matrix_ones(rows, cols):
     return matrix
 
 
-def matrix_multiply(matrix, scalar):
+def matrix_multiply(matrix:list, scalar:float)->list:
     """
     Nhân ma trận với một số vô hướng
 
@@ -72,7 +72,7 @@ def matrix_multiply(matrix, scalar):
         new_row = [element * scalar for element in row]
         result.append(new_row)
     return result
-def find_best_global(positions):
+def find_best_global(positions:list)->list:
     """
     Tìm và trả về phần tử có giá trị cuối cùng (vị trí cuối cùng trong mỗi sublist) lớn nhất trong danh sách.
     
@@ -80,12 +80,12 @@ def find_best_global(positions):
     - positions: Danh sách chứa các danh sách con, mỗi danh sách con có ít nhất một phần tử.
     
     Returns:
-    - Phần tử có giá trị cuối cùng lớn nhất trong danh sách.
+    - Phần tử có giá trị bé nhất trong danh sách.
     """
     if not positions:
         return None  # Trả về None nếu danh sách rỗng
 
-    # Khởi tạo phần tử có giá trị cuối cùng lớn nhất
+    # Khởi tạo phần tử có giá trị bé nhất
     best_global = positions[0]
 
     # Duyệt qua danh sách để tìm phần tử bé nhất

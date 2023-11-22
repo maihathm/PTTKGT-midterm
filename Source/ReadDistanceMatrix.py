@@ -5,7 +5,7 @@ Mã nguồn triển khai đọc dữ liệu đầu vào.
 import os
 import distance_matrix
 
-def readDistanceMatrix(file_path):
+def readDistanceMatrix(file_path:str)->list:
     """
     Đọc một tệp dữ liệu chứa ma trận khoảng cách từ định dạng được chỉ định và trả về ma trận khoảng cách.
 
