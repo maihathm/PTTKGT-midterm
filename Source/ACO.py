@@ -10,7 +10,7 @@ import two_opt
 random.seed(10)
 
 # Function: Initial Attractiveness
-def attractiveness(distance_matrix:list)->list:
+def attractiveness(distance_matrix:list[float])->list[float]:
     """Tính độ hấp dẫn của một ma trận khoảng cách.
 
   Args:
@@ -32,7 +32,7 @@ def attractiveness(distance_matrix:list)->list:
 
 
 # Function: Probability Matrix
-def city_probability(h:list, thau:list, city:int=0, alpha:float=1, beta:float=2, city_list:list=None)->list:
+def city_probability(h:list[list[float]], thau:list[list[float]], city:int=0, alpha:float=1, beta:float=2, city_list:list[list[int]]=None)->list[list[float]]:
     """
     Tính toán xác suất tham quan của mỗi thành phố trong một chuyến du lịch dựa trên ma trận pheromone, ma trận heuristic và thành phố hiện tại.
 
@@ -83,7 +83,7 @@ def city_probability(h:list, thau:list, city:int=0, alpha:float=1, beta:float=2,
 
 
 # Function: Select Next City
-def city_selection(probability_matrix:list, city_list:list=None)->int:
+def city_selection(probability_matrix:list[list[list[float]]], city_list:list[int]=None)->int:
     """
     Lựa chọn một thành phố để tham quan tiếp theo dựa trên ma trận xác suất và danh sách các thành phố đã được tham quan.
 
@@ -113,7 +113,7 @@ def city_selection(probability_matrix:list, city_list:list=None)->int:
 
 
 # Function: Update Thau
-def update_thau(distance_matrix:list, thau:list, city_list:list=None)->list:
+def update_thau(distance_matrix:list[float], thau:list[list[float]], city_list:list[int]=None)->list[list[float]]:
     """
     Cập nhật ma trận pheromone sau khi hoàn thành một chuyến tham quan.
 
@@ -153,7 +153,7 @@ def update_thau(distance_matrix:list, thau:list, city_list:list=None)->list:
 
 
 # Function: Ants City List
-def ants_path(initial:int, distance_matrix:list, h:list, thau:list, alpha:float, beta:float, full_list:list, ants:int, local_search:bool):
+def ants_path(initial:int, distance_matrix:list[float], h:list, thau:list, alpha:float, beta:float, full_list:list, ants:int, local_search:bool):
     """
     Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO).
 
@@ -225,7 +225,7 @@ def ants_path(initial:int, distance_matrix:list, h:list, thau:list, alpha:float,
 # ACO Function
 def ant_colony_optimization(initial:int, distance_matrix:list, ants:int=5, iterations:int=5, alpha:float=1, beta:float=2, decay:float=0.05,
                             local_search:bool=True,
-                            verbose:bool=False, current_best_distance=None):
+                            verbose:bool=False, current_best_distance=None)->list[int]:
     """
     Tìm đường đi ngắn nhất qua một tập các thành phố bằng thuật toán Optimization của Kiến (ACO)
 
