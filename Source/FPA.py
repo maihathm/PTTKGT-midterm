@@ -7,6 +7,7 @@ import math
 import random
 import functions
 
+
 def fitness_function():
     """
     Chưa được triển khai (đang giữ lại với lời gọi "pass"). Đây sẽ là hàm mục tiêu cần tối ưu hóa.
@@ -14,7 +15,7 @@ def fitness_function():
     pass
 
 
-def init_population(N:int=None, min_val:list=None, max_val:list=None, function=None, initial:int=1, distance_matrix:list=None)->list:
+def init_population(N:int=None, min_val:list[float]=None, max_val:list[float]=None, function=None, initial:int=1, distance_matrix:list[list[float]]=None)->list[list[int],float]:
     """
     Khởi tạo quần thể cá thể ban đầu cho thuật toán tối ưu hóa dựa trên quần thể.
 
@@ -102,9 +103,9 @@ def levy_flight(beta:float=None)->float:
 
 
 # pollination global
-def pollination_global(population: [], best_global: [], flower:int, gamma:float, lamb:float,
-                       min_value:list, max_value:list, function, initial:int,
-                       distance_matrix:list, distance=None)->list:
+def pollination_global(population: list[list[int],float], best_global: list[list[int],float], flower:int, gamma:float, lamb:float,
+                       min_value:list[float], max_value:list[float], function, initial:int,
+                       distance_matrix:list[list[float]], distance:float=None)->list[list[int],float]:
     """
     Thực hiện phép thụ phấn toàn cầu trong thuật toán FPA
 
@@ -155,8 +156,8 @@ def pollination_global(population: [], best_global: [], flower:int, gamma:float,
     return x
 
 
-def pollination_local(population: [], best_global: [], flower:int, nb_flower1:float=None, nb_flower2:float=None, min_value:list=None,
-                      max_value:list=None, function=None, initial:int=1, distance_matrix:list=None, distance=None)->list:
+def pollination_local(population: list[list[int],float], best_global: list[list[int],float], flower:int, nb_flower1:float=None, nb_flower2:float=None, min_value:list[float]=None,
+                      max_value:list[float]=None, function=None, initial:int=1, distance_matrix:list[list[float]]=None, distance:float=None)->list[list[int],float]:
     """
     Thực hiện phép thụ phấn địa phương trong thuật toán FPA
 
@@ -200,9 +201,9 @@ def pollination_local(population: [], best_global: [], flower:int, nb_flower1:fl
 
 
 # Flower Pollination Algorithms
-def flower_pollination_algorithms(flowers:int=3, position:list=None, min_values:list=None, max_values:list=None,
+def flower_pollination_algorithms(flowers:int=3, position:list[list[int],float]=None, min_values:list[float]=None, max_values:list[float]=None,
                                   iteration:int=50, gamma:float=0.5,lamb:float=1.4,
-                                  p:float=0.8, initial:int=1, distance_matrix:list=None, function=None, distance=None)->list:
+                                  p:float=0.8, initial:int=1, distance_matrix:list[list[float]]=None, function=None, distance:float=None)->list[list[int],float]:
     """
     Tối ưu hóa dựa trên quần thể FPA
 
