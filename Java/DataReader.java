@@ -63,10 +63,6 @@ public class DataReader {
         String filePath = "TSP-01.txt";
         List<List<Double>> distanceMatrix = readDistanceMatrix(filePath);
 
-        // System.err.println(distanceMatrix);
-        // In ma trận khoảng cách
-        for (List<Double> row : distanceMatrix) {
-            System.out.println(row);
-        }
+        System.err.println(distanceMatrix);
     }
 }
